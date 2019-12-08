@@ -78,3 +78,30 @@ implying that $w'(t)\le 0$ for all $t>0$. On the other hand, since $w(t)\ge0$ fo
 
 
 
+Let $A\in\mathbb{R}^{n\times n}$ be a real symmetric matrix. Define $f\colon\mathbb{R}^n\to\mathbb{R}^n$ by
+\[
+f(x)=[x^TxA+(1-x^TAx)I]x,\;\;\;\; x\in\mathbb{R}^n,
+\]
+where $I\in\mathbb{R}^{n\times n}$ is the identity matrix. Let $x\colon\mathbb{R}\to\mathbb{R}^n$ be a map that satisfies
+\begin{equation}\label{eq:diff_eigen}
+    Dx(t)=-x(t)+f(x(t)).
+\end{equation}
+We then have the following theorem \cite{yfh04}:
+\begin{theorem}
+For each solution $x\colon\mathbb{R}\to\mathbb{R}^n$ of \autoref{eq:diff_eigen}, the limit $\lim_{t\to\infty}x(t)$ exists and converges to an eigenvector of $A$.
+
+If $\lambda$ is the largest eigenvalue of $A$ and the starting point $x(0)$ is not orthogonal to the eigenspace of $\lambda$, then $\lim_{t\to\infty}x(t)$ is an eigenvector of $A$ with eigenvalue $\lambda$.
+
+Replacing $A$ with $-A$, then if $x(0)$ is not orthogonal to the eigenspace of the smallest eigenvalue $\sigma$ of $A$, the limit $\lim_{t\to\infty}x(t)$ converges to an eigenvector corresponding to $\sigma$.
+\end{theorem}
+
+\begin{definition}[Rayleigh quotient {\cite[234]{hj13}}]
+Given a matrix $A\in\mathbb{R}^{n\times n}$ and a vector $x\in\mathbb{R}^n$, the \emph{Rayleigh quotient} is defined as
+\begin{equation*}
+    r(A,x) = \frac{x^TAx}{x^Tx}.
+\end{equation*}
+Note that if $x$ is an eigenvector of $A$ with eigenvalue $\lambda$, then
+\begin{equation*}
+    r(A,x)=\frac{x^TAx}{x^Tx}=\frac{x^T (\lambda x)}{x^T x}=\lambda.
+\end{equation*}
+\end{definition}

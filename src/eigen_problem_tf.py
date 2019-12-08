@@ -38,10 +38,8 @@ def trial_solution(model, x0, t):
 def rhs(model, A, x0, t):
     """ODE right-hand side"""
     g = trial_solution(model, x0, t)
-    # ode_rhs = tf.einsum('ij,ij,kl,il->ik', g, g, A, g) - \
-    #    tf.einsum('ij,jk,ik,il->il', g, A, g, g)
-
-    ode_rhs = tf.einsum('jk,ik->ij', A, g) - tf.einsum('ij,ij,ik->ik', g, g, g)
+    ode_rhs = tf.einsum('ij,ij,kl,il->ik', g, g, A, g) - \
+        tf.einsum('ij,jk,ik,il->il', g, A, g, g)
     return ode_rhs
 
 
@@ -77,9 +75,8 @@ def euler_eig(A, x0, T, N):
     dt = T / N
     x = [x0]
     for i in range(N - 1):
-        x.append(x[-1] + dt * (A @ x[-1] - (x[-1].T @ x[-1]) * x[-1]))
-        # x.append(x[-1] + dt * ((x[-1].T @ x[-1]) * A @
-        #                       x[-1] - (x[-1].T @ A) @ x[-1] * x[-1]))
+        x.append(x[-1] + dt * ((x[-1].T @ x[-1]) * A @
+                               x[-1] - (x[-1].T @ A) @ x[-1] * x[-1]))
 
     x = np.array(x)
     x = x / np.sqrt(np.einsum("ij,ij->i", x, x)[:, np.newaxis])
@@ -90,12 +87,12 @@ def euler_eig(A, x0, T, N):
 
 if __name__ == "__main__":
 
-    tf.random.set_seed(32)
-    np.random.seed(32)
+    tf.random.set_seed(42)
+    np.random.seed(42)
 
     # Define problem
     n = 6    # Dimension
-    T = 5  # Final time
+    T = 10  # Final time
     N = 1001  # number of time points
 
     # Benchmark problem
@@ -106,7 +103,7 @@ if __name__ == "__main__":
     t = np.linspace(0, T, N)
 
     # Problem formulation for tensorflow
-    Nt = 6
+    Nt = 11
     A_tf = tf.convert_to_tensor(A, dtype=tf.float64)
     x0_tf = tf.convert_to_tensor(x0, dtype=tf.float64)
     start = tf.constant(0, dtype=tf.float64)
@@ -117,7 +114,7 @@ if __name__ == "__main__":
     # Initial model and optimizer
     model = DNModel(n)
     optimizer = tf.keras.optimizers.Adam(0.01)
-    num_epochs = 2000
+    num_epochs = 4000
 
     for epoch in range(num_epochs):
         cost, gradients = grad(model, A, x0_tf, t_tf)
