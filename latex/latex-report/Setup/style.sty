@@ -61,6 +61,8 @@
 %---------- math environment --------------
 \usepackage{mathtools}  % also loads amsmath
 \usepackage{amssymb}
+\RequirePackage{amsthm}     % Theorem-like environments
+\RequirePackage{thmtools}   % Theorem-like environments, extends amsthm
 \usepackage{braket}
 \usepackage{xfrac}      % provides \sfrac
 \usepackage{bm} 
@@ -180,5 +182,21 @@
     natbib,
     hyperref
 ]{biblatex}
+
+%% Environments
+\declaretheoremstyle[headfont   = \bfseries\sffamily,
+                     notefont   = \normalfont,
+                     bodyfont   = \itshape,
+                     spaceabove = 6pt,
+                     spacebelow = 6pt]{plain}
+\declaretheoremstyle[headfont   = \bfseries\sffamily,
+                     notefont   = \normalfont,
+                     spaceabove = 6pt,
+                     spacebelow = 6pt]{definition}
+\declaretheorem[style = plain, numberwithin = section]{theorem}
+\declaretheorem[style = plain,      sibling = theorem]{corollary}
+\declaretheorem[style = plain,      sibling = theorem]{lemma}
+\declaretheorem[style = plain,      sibling = theorem]{proposition}
+\declaretheorem[style = definition, sibling = theorem]{definition}
 
 %-------------------- end style ---------------------------
