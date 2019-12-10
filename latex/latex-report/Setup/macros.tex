@@ -23,22 +23,19 @@
 
 %----------------- tikz ---------------------------
 % Define block styles
-\tikzstyle{startstop} = [rectangle, rounded corners,
-    minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=red!30]
-\tikzstyle{io} = [trapezium, trapezium left angle=70, 
-    trapezium right angle=110, minimum width=3cm, minimum height=1cm, text centered, text width=3cm, draw=black, fill=blue!30]
-\tikzstyle{process} = [rectangle, minimum width=3cm,
-    minimum height=1cm, text centered, text width=3cm, 
-    draw=black, fill=orange!30] 
-\tikzstyle{decision} = [diamond, minimum width=3cm, 
-    minimum height=1cm, text centered,text width=2cm, 
-    draw=black, fill=green!30]
-\tikzstyle{arrow} = [thick,->,>=stealth]
-\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
-    text width=5em, text centered, rounded corners, minimum height=4em]
-\tikzstyle{line} = [draw, -latex']
-\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm,
-    minimum height=2em]
+\tikzset{%
+  every neuron/.style={
+    circle,
+    draw,
+    minimum size=1cm
+  },
+  neuron missing/.style={
+    draw=none, 
+    scale=4,
+    text height=0.333cm,
+    execute at begin node=\color{black}$\vdots$
+  },
+}
 
 
 %---------- insert custom LaTeX commands ----------

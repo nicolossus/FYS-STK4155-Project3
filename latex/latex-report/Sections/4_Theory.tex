@@ -2,13 +2,39 @@
 \section{Theory}\label{sec:Theory}
 %================================================================
 
+%================================================================
+\subsection{The Heat Equation}\label{sec:Heat eq Theory}
+%===============================================================
+In the natural sciences, problems with variables constrained by boundary conditions and initial values are often modelled by differential equations. The heat equation, which is a partial differential equation and a special case of the diffusion equation, describes the heat propagation in the evolution of time as it is transferred from regions of higher temperature to regions of lower temperature in a solid medium \cite{hpl}. The general heat equation reads
+\begin{equation}\label{eq:heq general}
+    \dot{u} = \alpha \nabla^2 u
+\end{equation}
+where $\alpha$ is the diffusion coefficient which is a measure of the rate of transfer of heat with dimension length$^2$/time.
+
+The initial condition gives the temperature distribution
+in the rod at t=0. Physically this means that we need to know the
+temperature in the rod at a moment to be able to predict the future temperature distribution
+
+Dirichlet conditions:
+The temperatures at the endpoints of the rod,
+T(0,t) and T(1,t), are prescribed at all time
+Physically, this corresponds to a situation where we have a heat source which keep the temperature at given values at the endpoints
 
 
+The complete initial-boundary value heat diffusion problem in one spatial dimension can then be specified as
+\begin{alignat}{2}
+    \pdv{u}{t} &= \alpha \pdv[2]{u}{x}, \quad &&x \in (0,L), t\in (0, T], \label{eq:heat eq 1D}\\
+    u(x,0) &= I(x), \quad &&x\in [0,L], \\
+    u(0,t) &= 0, \quad &&t \geq 0, \\
+    u(L,t) &= 0, \quad &&t \geq 0
+\end{alignat}
 
-%----------------------------------------------------------------
-\subsection{Project Theory 1}\label{sec:project theory}
-%----------------------------------------------------------------
-This is \autoref{sec:project theory}.
+%================================================================
+\subsection{Closed Form Solution of the Heat Equation}\label{sec:Heat analytic Theory}
+%================================================================
+
+Scale problem
+
 
 \begin{equation}\label{eq:heat}
 \frac{\partial^2 u(x,t)}{\partial x}= \frac{\partial u(x,t)}{\partial t},\;\;\;\;t>0,x\in[0,1],
@@ -76,6 +102,45 @@ Then integration by parts yields
 \end{equation*}
 implying that $w'(t)\le 0$ for all $t>0$. On the other hand, since $w(t)\ge0$ for all $t>0$ and $w(0)=0$, we must have $w'(t)\ge0$. It follows that $w'(t)=0, t>0$, and thus $w(t)=0$ for all $t\ge0$. We conclude that $u_1=u_2$.
 
+
+%================================================================
+\subsection{Explicit Numerical Scheme Using Forward Euler}\label{sec:Heat numerical Theory}
+%================================================================
+This section is based on the procedure described in \cite{hpl}. We have here opted for deriving a scheme for the non-scaled PDE for more generality/to obtain more flexibility in the numerical model .
+
+In order to derive the discrete set of equations to be solved, the domain $\qty[0,L]\times \qty[0,T]$ is discretized by replacing both the spatial and temporal domains by a set of uniform mesh points
+\begin{align*}
+    x_i &= i \Delta x, \quad i=0, ..., N_x
+    \intertext{and}
+    t_n &= n \Delta t, \quad n=0, ..., N_t
+\end{align*}
+The mesh function, denoted $u_i^n$, then approximates the exact solution $u\qty(x_i, t_n)$ for $i=0, ..., N_x$ and $n=0, ..., N_t$. Requiring the PDE \autoref{eq:heat eq 1D} to
+
+
+\begin{equation}\label{eq:FE scheme}
+    u_i^{n+1} = u_i^n + F \qty(u_{i+1}^n - 2u_i^n + u_{i-1}^n),
+\end{equation}
+where $F=\alpha \Delta t/\Delta x^2$
+
+%================================================================
+\subsection{Solving Differential Equations With Neural Networks}
+%================================================================
+
+\begin{definition}[Squashing function]
+A \emph{squashing function} is a function $\psi\colon\mathbb{R}\to[0,1]$ that is monotonely increasing and with $\lim_{t\to\infty}\psi(t)=1$ and $\lim_{t\to -\infty}=0$.
+\end{definition}
+
+Denote by $\Sigma^n(\psi)$ the set of all output functions for single hidden layer feed-forward networks with $n$ real-valued inputs, $\psi$ as squashing function at the hidden layer, and no squashing at the output.
+
+Let $C(K)$ be the set of all continuous functions from $K\subseteq\mathbb{R}^n$ into $\mathbb{R}$.
+
+\begin{theorem}
+For any squashing function $\psi$ and any $n\in\mathbb{N}$, the set $\Sigma^n(\psi)$ is uniformly dense in $C(K)$ for compact subsets $K\subseteq\mathbb{R}^n$.
+\end{theorem}
+
+%----------------------------------------------------------------
+\subsection{Project Theory 1}\label{sec:project theory}
+%----------------------------------------------------------------
 
 
 Let $A\in\mathbb{R}^{n\times n}$ be a real symmetric matrix. Define $f\colon\mathbb{R}^n\to\mathbb{R}^n$ by
