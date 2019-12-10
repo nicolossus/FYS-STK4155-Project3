@@ -10,27 +10,126 @@
 \subsection{Heat Equation}\label{sec:heateq results}
 %----------------------------------------------------------------
 
+\subsection{Forward Euler}
+Nx = 11
+Nt = 199
+
+Max diff: 0.04009472326320718
+Mean diff: 0.003186288853514369
+
+\autoref{fig:heat_fe}
+\begin{figure}[H]
+\centering
+\subfloat[]{{\includegraphics[scale=0.48]{latex/figures/heat_ana_fe.pdf}}}
+\qquad
+\subfloat[]{{\includegraphics[scale=0.48]{latex/figures/heat_fe.pdf}}}
+\qquad
+\subfloat[]{{\includegraphics[scale=0.5]{latex/figures/heat_diff_fe.pdf}}}
+\caption{FE heat}
+\label{fig:heat_fe}
+\end{figure}
+
+CPU benchmark
+Number of iterations: 1000
+FE mean CPU time: 0.00158 secs
 
 
 \subsubsection{FFNN}
-1000 epochs, 2 layers + output [tanh, sigmoid], [150, 50]
 
-Step: 1000, Loss: 0.0016617125560005742
-Max diff: 0.05224646323864751
-Mean diff: 0.004334475145176679
+\subsubsection{Model 1}
+Model 1: Train on spatial and temporal points as dictated by FE stability criterion
 
-\autoref{fig:heat_nn} 
+Nx = 11
+Nt = 199
+2 layers + output, [150, 50, 1], [tanh, sigmoid, none] 
+1000 epochs
+Adam, initial lr=0.01
+Step: 1000, Loss: 0.008064055285575904
+Training FFNN CPU time: 147.62562 secs
+
+\autoref{fig:heat_nn1} Plot solution on the grid FFNN is trained on
+
+Max diff: 0.008466789818225778
+Mean diff: 0.0029635112954797672
 
 \begin{figure}[H]
 \centering
-\subfloat[]{{\includegraphics[scale=0.48]{latex/figures/heat_ana.pdf}}}
+\subfloat[]{{\includegraphics[scale=0.48]{latex/figures/heat_ana_nn1.pdf}}}
 \qquad
 \subfloat[]{{\includegraphics[scale=0.48]{latex/figures/heat_nn1.pdf}}}
 \qquad
 \subfloat[]{{\includegraphics[scale=0.5]{latex/figures/heat_diff_nn1.pdf}}}
-\caption{wiahefba}
-\label{fig:heat_nn}
+\caption{Model 1, Plot solution on the grid FFNN is trained on}
+\label{fig:heat_nn1}
 \end{figure}
+
+\autoref{fig:heat_nn2} Plot solution on a larger grid than FFNN is trained on, i.e., points must be interpolated
+
+301, 301 points
+
+Max diff: 0.008467176325477247
+Mean diff: 0.0032787069037113277
+
+\begin{figure}[H]
+\centering
+\subfloat[]{{\includegraphics[scale=0.48]{latex/figures/heat_ana_nn2.pdf}}}
+\qquad
+\subfloat[]{{\includegraphics[scale=0.48]{latex/figures/heat_nn2.pdf}}}
+\qquad
+\subfloat[]{{\includegraphics[scale=0.5]{latex/figures/heat_diff_nn2.pdf}}}
+\caption{Model 1, Plot solution on a larger grid than FFNN is trained on, i.e., points must be interpolated}
+\label{fig:heat_nn2}
+\end{figure}
+
+\subsubsection{Model 2}
+Model 2: Train on equal number of spatial and temporal points
+
+Nx = 11
+Nt = 11
+2 layers + output, [150, 50, 1], [tanh, sigmoid, none] 
+1000 epochs
+Adam, initial lr=0.01
+Step: 1000, Loss: 0.008064055285575904
+Training FFNN CPU time: 147.62562 secs
+Step: 1000, Loss: 0.0027709536906761877
+Training FFNN CPU time: 42.11612 secs
+
+\autoref{fig:heat_nn3} Plot solution on the grid FFNN is trained on
+
+Max diff: 0.026960711104318635
+Mean diff: 0.0029851059330631173
+
+\begin{figure}[H]
+\centering
+\subfloat[]{{\includegraphics[scale=0.48]{latex/figures/heat_ana_nn3.pdf}}}
+\qquad
+\subfloat[]{{\includegraphics[scale=0.48]{latex/figures/heat_nn3.pdf}}}
+\qquad
+\subfloat[]{{\includegraphics[scale=0.5]{latex/figures/heat_diff_nn3.pdf}}}
+\caption{Model 2, Plot solution on the grid FFNN is trained on}
+\label{fig:heat_nn3}
+\end{figure}
+
+\autoref{fig:heat_nn4} Plot solution on a larger grid than FFNN is trained on, i.e., points must be interpolated
+
+301, 301 points
+
+Max diff: 0.03215260678986426
+Mean diff: 0.003950743671390742
+
+\begin{figure}[H]
+\centering
+\subfloat[]{{\includegraphics[scale=0.48]{latex/figures/heat_ana_nn4.pdf}}}
+\qquad
+\subfloat[]{{\includegraphics[scale=0.48]{latex/figures/heat_nn4.pdf}}}
+\qquad
+\subfloat[]{{\includegraphics[scale=0.5]{latex/figures/heat_diff_nn4.pdf}}}
+\caption{Model 2, Plot solution on a larger grid than FFNN is trained on, i.e., points must be interpolated}
+\label{fig:heat_nn4}
+\end{figure}
+
+\subsubsection{Home-made}
+
 
 %----------------------------------------------------------------
 \subsection{Eigenvalue Problem}\label{sec:eigenvalue results}

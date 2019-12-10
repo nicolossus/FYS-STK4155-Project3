@@ -2,5 +2,12 @@
 %------------------------- Abstract -----------------------------
 %================================================================
 \begin{abstract}
+The aim of this project is to design feed-forward neural network (FFNN) models suitable for solving differential equations. Traditional numerical methods and closed form solutions, when present, have been used to assess the efficiency and accuracy of the FFNN models.
+
+The first FFNN model is employed to learn the initial-boundary problem given by the heat equation, a PDE with both temporal and spatial dependence. The problem formulation is scaled to the standard unity interval (0,1) in one spatial dimension. 
+
+Heat PDE. Forward Euler stability criterion - requires many more temporal mesh points for finer spatial resolution, FFNN advantageous - manages to interpolate to larger grids contained in the domain it was trained on without significant loss in accuracy.
+
+A FFNN was also employed to learn the solution to the nonlinear, coupled ordinary differential equation (ODE), presented by Yi et. al in \cite{yfh04}, describing the state of a continuous time recurrent neural network (CTRNN) model. Given a real symmetric matrix $A$ in the source term, the temporal dynamic described by this ODE has convergence properties to the largest eigenvalue. Simply replacing $A$ with $-A$ yield the smallest eigenvalue. Our FFNN succeeded in computing both the largest and smallest eigenvalue to an accuracy ranging from !!!NUMBERS!!!! for some benchmark $3\times 3$ and $6\times 6$ real symmetric matrices, respectively. However, the FFNN model proved to not be as efficient and accurate as Euler's method for solving this particular ODE, especially for complexities imposed on the ODE by matrices with higher dimension.
 
 \end{abstract}
