@@ -1,16 +1,38 @@
 %================================================================
 \section{Results and Discussion}\label{sec:Results}
 %================================================================
+\begin{table}[H]
+\caption{Table text}
+\centering
+\rowcolors{2}{gray!20}{white}
+\begin{tabular}{ccc}
+\hline
+\hline 
+$\alpha$ & $\beta$ & $\gamma$
+\\
+\hline 
+\hline 
+0.1 & 0.2 & 0.3
+\\
+0.4 & 0.5 & 0.6
+\\
+0.7 & 0.8 & 0.9
+\\
+\hline
+\hline 
+\end{tabular}
+\label{tab:tab1}
+\end{table}
 
-%----------------------------------------------------------------
-\subsection{Project Results 1}\label{sec:project results}
-%----------------------------------------------------------------
 
-%----------------------------------------------------------------
+%===============================================================
 \subsection{Heat Equation}\label{sec:heateq results}
-%----------------------------------------------------------------
+%===============================================================
+Accompanying notebook: \href{https://github.com/nicolossus/FYS-STK4155-Project3/blob/master/notebooks/heat_pde_with_fe_and_tf.ipynb}{heat\_pde\_with\_fe\_and\_tf.ipynb}.
 
-\subsection{Forward Euler}
+%===============================================================
+\subsubsection{Forward Euler}
+%===============================================================
 Nx = 11
 Nt = 199
 
@@ -33,10 +55,10 @@ CPU benchmark
 Number of iterations: 1000
 FE mean CPU time: 0.00158 secs
 
+%===============================================================
+\subsubsection{FFNN Model 1}
+%===============================================================
 
-\subsubsection{FFNN}
-
-\subsubsection{Model 1}
 Model 1: Train on spatial and temporal points as dictated by FE stability criterion
 
 Nx = 11
@@ -81,7 +103,9 @@ Mean diff: 0.0032787069037113277
 \label{fig:heat_nn2}
 \end{figure}
 
-\subsubsection{Model 2}
+%===============================================================
+\subsubsection{FFNN Model 2}
+%===============================================================
 Model 2: Train on equal number of spatial and temporal points
 
 Nx = 11
@@ -128,63 +152,136 @@ Mean diff: 0.003950743671390742
 \label{fig:heat_nn4}
 \end{figure}
 
-\subsubsection{Home-made}
+%===============================================================
+\subsubsection{Home-made FFNN}
+%===============================================================
 
 
-%----------------------------------------------------------------
+%===============================================================
+%===============================================================
 \subsection{Eigenvalue Problem}\label{sec:eigenvalue results}
-%----------------------------------------------------------------
+%===============================================================
+%===============================================================
 
-Accompanying notebook: 
+Accompanying notebook: \href{https://github.com/nicolossus/FYS-STK4155-Project3/blob/master/notebooks/eigenvalue_tf.ipynb}{eigenvalue\_tf.ipynb}.
+
+%===============================================================
+\subsubsection{Benchmark Problem 1}
+%===============================================================
+
+\autoref{tab:parabench1} tabulates the problem and model parameters for Benchmark Problem 1 described in \autoref{sec:benchmark problem 1}. 
+
+\begin{table}[H]
+\caption{Problem and model parameters for Benchmark Problem 1.}
+\centering
+\rowcolors{2}{gray!20}{white}
+\begin{tabular}{c|c}
+\hline
+\hline 
+Parameter & Numerical Value
+\\
+\hline 
+\hline 
+Initial vector & $\bm{x_0}=(1,0,0)$
+\\
+Simulation time & 1
+\\
+Number of time points (Euler) & 101
+\\
+Number of time points (FFNN) & 11
+\\
+Number of epochs (FFNN) & 2000
+\\
+\hline
+\hline 
+\end{tabular}
+\label{tab:parabench1}
+\end{table}
 
 
-\subsubsection*{Benchmark ODE rhs with Euler}
-
-\autoref{fig:euler_benchmark}, ODE RHS, two alternatives, benchmark which gives best result with Euler's method. simulation, time $t\in [0, 5]$ with $N = 101$ number of timesteps
+\autoref{fig:benchrun1} shows the results for Benchmark Problem 1. The computed Rayleigh quotients and the absolute error relative to the eigenvalue computed by Numpy are tabulated in \autoref{tab:eigbench1}. 
 
 \begin{figure}[H]
 \centering
-\subfloat[]{{\includegraphics[scale=0.5]{latex/figures/euler_benchmark_33.pdf}}}
+\subfloat[]{{\includegraphics[scale=0.6]{latex/figures/eigvec_comp_benchrun1.pdf}}}
 \qquad
-\subfloat[]{{\includegraphics[scale=0.5]{latex/figures/euler_benchmark_66.pdf}}}
-\caption{Euler's method with different expressions of the right-hand side of ODE (ref) tested on randomly generated real symmetric matrices; in \textbf{(a)} a $3\times 3$-matrix, and in \textbf{(b)} a $6\times 6$-matrix.}
-\label{fig:euler_benchmark}
-\end{figure}
-
-From the figures it seems like ODE RHS ver1 converges somewhat slower than ver2 in the 3x3 case. In the 6x6 case, however, ver1 often struggles to converge as good as ver2 (multiple runs, which can be easily reproduced in jupyter notebook). Both these 'problems' probably arises because ver1 is more computationally demanding than ver2.
-
-\subsubsection{FFNN, benchmark problem}
-
-\begin{equation*}
-    A = \left(\begin{array}{ccc}
-        3 & 2 & 4  \\
-        2 & 0 & 2  \\
-        4 & 2 & 3
-    \end{array}\right)
-\end{equation*}
-with eigenvalues $\lambda_1 = 8$ and $\lambda_2 = \lambda_3 = -1$.
-
-
-
-\autoref{fig:benchrun1}; 3 layers + output [sigmoid, relu, sigmoid], [100, 50, 25]
-
-Step: 1500, Loss: 0.014227586970184775
-
-A = [[3. 2. 4.]
- [2. 0. 2.]
- [4. 2. 3.]]
-x0 = [1 0 0]
-Eigvals Numpy: [-1.  8. -1.]
-Max Eigval Numpy 8.0
-Final Eigval Euler 7.999999884131663
-Final Eigval FFNN 7.999994245949094
-
-\begin{figure}[H]
-\centering
-\subfloat[]{{\includegraphics[scale=0.5]{latex/figures/eigvec_comp_benchrun1.pdf}}}
-\qquad
-\subfloat[]{{\includegraphics[scale=0.5]{latex/figures/eigval_benchrun1.pdf}}}
-\caption{Benchrun 1 \textbf{(a)} Components of steady-state vector computed with both Euler's method (dashed lines) and the feed-forward neural network (solid line). \textbf{(b)} Computed maximum eigenvalue }
+\subfloat[]{{\includegraphics[scale=0.6]{latex/figures/eigval_benchrun1.pdf}}}
+\caption{Results for Benchmark Problem 1 with a $3\times 3$ real symmetric matrix, $A$. \textbf{(a)} shows the components of the computed steady-state vector as a function of time. The dashed lines are the components computed by Euler's method and the solid lines are computed by the FFNN model. The dotted lines are the normalized (unit "length") eigenvector components corresponding to the largest eigenvalue computed directly from the matrix by Numpy's linalg.eig. \textbf{(b)} shows the computed Rayleigh quotients, $r$, as a function of time for both Euler's method and the FFNN model and the largest eigenvalue, $\lambda_\mathrm{max}$, of the matrix computed by Numpy's linalg.eig as well. The final Rayleigh quotients are rounded to 5 decimal points.}
 \label{fig:benchrun1}
 \end{figure}
+
+\begin{table}[H]
+\caption{The computed Rayleigh quotients at the final simulation time for both Euler's method and the FFNN model. The absolute error relative to the eigenvalue computed by Numpy is also listed.}
+\centering
+\rowcolors{2}{gray!20}{white}
+\begin{tabular}{c|c|c}
+\hline
+\hline 
+Method & Rayleigh Quotient & Absolute Error
+\\
+\hline 
+\hline 
+Numpy & 8.0 & –
+\\
+Euler & 7.99999993 & $6.007 \cdot 10^{-8}$  
+\\
+FFNN & 7.99999803 & $1.967 \cdot 10^{-6}$
+\\
+\hline
+\hline 
+\end{tabular}
+\label{tab:eigbench1}
+\end{table}
+
+The eigenvalue computed by Numpy correspond to the analytical solution in this case. Euler achieves higher accuracy
+
+DISCUSSION
+
+%===============================================================
+\subsubsection{Benchmark Problem 2}
+%===============================================================
+
+The problem and model parameters for Benchmark Problem 2, described in \autoref{sec:benchmark problem 2}, are the same as for Benchmark Problem 1 tabulated in \autoref{tab:parabench1}. The difference for this problem is that the matrix has opposite signs, $-A$, i.e. we are finding the smallest eigenvalue of $A$.
+
+\autoref{fig:benchrun2} shows the results for Benchmark Problem 1. The computed Rayleigh quotients and the absolute error relative to the eigenvalue computed by Numpy are tabulated in \autoref{tab:eigbench2}. 
+
+\begin{figure}[H]
+\centering
+\subfloat[]{{\includegraphics[scale=0.6]{latex/figures/eigvec_comp_benchrun2.pdf}}}
+\qquad
+\subfloat[]{{\includegraphics[scale=0.6]{latex/figures/eigval_benchrun2.pdf}}}
+\caption{Results for Benchmark Problem 2 with a $3\times 3$ real symmetric matrix, $-A$. \textbf{(a)} shows the components of the computed steady-state vector as a function of time. The dashed lines are the components computed by Euler's method and the solid lines are computed by the FFNN model. The dotted lines are the normalized (unit "length") eigenvector components corresponding to the largest eigenvalue computed directly from the matrix by Numpy's linalg.eig. \textbf{(b)} shows the computed Rayleigh quotients, $r$, as a function of time for both Euler's method and the FFNN model and the largest eigenvalue, $\lambda_\mathrm{max}$, of the matrix computed by Numpy's linalg.eig as well. The final Rayleigh quotients are rounded to 5 decimal points.}
+\label{fig:benchrun2}
+\end{figure}
+
+\begin{table}[H]
+\caption{The computed Rayleigh quotients at the final simulation time for both Euler's method and the FFNN model. The absolute error relative to the eigenvalue computed by Numpy is also listed.}
+\centering
+\rowcolors{2}{gray!20}{white}
+\begin{tabular}{c|c|c}
+\hline
+\hline 
+Method & Rayleigh Quotient & Absolute Error
+\\
+\hline 
+\hline 
+Numpy & 1.0 & –
+\\
+Euler & 0.99999995 & $4.112 \cdot 10^{-8}$  
+\\
+FFNN & 0.99997506 & $2.493 \cdot 10^{-5}$
+\\
+\hline
+\hline 
+\end{tabular}
+\label{tab:eigbench2}
+\end{table}
+
+
+DISCUSS
+
+
+%===============================================================
+\subsubsection{Benchmark Problem 3}
+%===============================================================
 

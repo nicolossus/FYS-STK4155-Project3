@@ -111,6 +111,8 @@ Following the discussion in \autoref{sec:Heat numerical Theory}, the computation
 %----------------------------------------------------------------
 
 
+Draw network architecture 
+
 In this notebook, a FFNN model is employed to learn the solution to the nonlinear, coupled ODE, presented by Yi et. al in \cite{yfh04}, describing the state of a CTRNN model. Given a real symmetric matrix $A$ in the source term, the temporal dynamic described by this ODE has convergence properties to the largest eigenvalue. Simply replacing $A$ with $-A$ yield the smallest eigenvalue
 
 The article also states that the network should converge to a different eigenvalue if the initial vector, $\mathbf{x}_0$, is orthogonal to the eigenvector corresponding to the largest eigenvalue.
@@ -121,3 +123,27 @@ FFNN model is employed within the \cw{TensorFlow} framework
 The aim is to design a FFNN model suitable for solving this ODE, and check if it succeed in computing both the largest and smallest eigenvalue for some benchmark $3\times 3$ and $6\times 6$ real symmetric matrices. We will also check whether the network converges to a different eigenvalue than the largest if $\mathbf{x}_0$ is chosen to be orthogonal to the eigenvector corresponding to the largest eigenvalue. 
 
 In order to assess the FFNN model, we will compare the result with those from Euler's method for solving the same ODE and  \cw{Numpy's linalg.eig} which directly computes the eigenvalues of the matrix $A$.
+
+%==============================================================
+\subsubsection{Benchmark Problem 1}\label{sec:benchmark problem 1}
+%==============================================================
+Benchmark Problems with 3x3 matrix
+
+\begin{equation}\label{eq:33mat}
+    A = \left(\begin{array}{ccc}
+        3 & 2 & 4  \\
+        2 & 0 & 2  \\
+        4 & 2 & 3
+    \end{array}\right)
+\end{equation}
+with eigenvalues $\lambda_1 = 8$ and $\lambda_2 = \lambda_3 = -1$.
+
+Largest Eigenvalue of a 3x3 Matrix
+
+%==============================================================
+\subsubsection{Benchmark Problem 2}\label{sec:benchmark problem 2}
+%==============================================================
+Smallest eigenvalue (negative A),
+we use the same matrix as in Benchmark Problem 1, given by \autoref{eq:33mat}
+
+
