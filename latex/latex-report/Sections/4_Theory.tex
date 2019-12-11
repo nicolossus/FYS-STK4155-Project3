@@ -126,17 +126,36 @@ where $F=\alpha \Delta t/\Delta x^2$
 \subsection{Solving Differential Equations With Neural Networks}
 %================================================================
 
-\begin{definition}[Squashing function]
+\begin{definition}[Squashing function {\cite[Definition 2.3]{hsw89}}]
 A \emph{squashing function} is a function $\psi\colon\mathbb{R}\to[0,1]$ that is monotonely increasing and with $\lim_{t\to\infty}\psi(t)=1$ and $\lim_{t\to -\infty}=0$.
 \end{definition}
 
-Denote by $\Sigma^n(\psi)$ the set of all output functions for single hidden layer feed-forward networks with $n$ real-valued inputs, $\psi$ as squashing function at the hidden layer, and no squashing at the output.
+Denote by $\Sigma^n(\psi)$ the set of all output functions for single hidden layer feed-forward networks with $n$ real-valued inputs, having $\psi$ as squashing function at the hidden layer, and no squashing at the output. That is, $\Sigma^n(\psi)$ is the collection of functions $f\colon\mathbb{R}^n\to\mathbb{R}$ of the form
+\begin{equation*}
+    f(x)=\sum_{i=1}^m\beta_i\psi(w^T_ix + b_i),\;\;\;\;x,w_i\in\mathbb{R}^n,\beta_i,b_i\in\mathbb{R},m\in\mathbb{N}.
+\end{equation*}
 
-Let $C(K)$ be the set of all continuous functions from $K\subseteq\mathbb{R}^n$ into $\mathbb{R}$.
+Given a subspace $K\subseteq\mathbb{R}^n$, let $C(K)$ be the set of all continuous functions from $K\subseteq\mathbb{R}^n$ into $\mathbb{R}$.
 
-\begin{theorem}
-For any squashing function $\psi$ and any $n\in\mathbb{N}$, the set $\Sigma^n(\psi)$ is uniformly dense in $C(K)$ for compact subsets $K\subseteq\mathbb{R}^n$.
+\begin{theorem}[Universal Approximation Theorem {\cite[Theorem 2.4]{hsw89}}]\label{thrm:universal_approximation}
+For any squashing function $\psi$ and any $n\in\mathbb{N}$ and $K\subseteq\mathbb{R}^n$ compact, the set $\Sigma^n(\psi)$ is uniformly dense in $C(K)$.
 \end{theorem}
+
+From \autoref{thrm:universal_approximation} it follows that we can approximate the solutions of differential equations on compact subsets of $\mathbb{R}^n$ with neural networks.
+
+In the following, suppose for simplicity that $f$ is a function from a compact interval $[t_0,t_1]$ of $\mathbb{R}$ into $\mathbb{R}$. Let $f$ be given by a differential equation
+\begin{equation*}
+    g(x,f'(x),f''(x),\ldots,f^{k}(x)) = 0
+\end{equation*}
+for some $k\in\mathbb{N}$ and all $x$ in the interior of $K$. Suppose further that $f(t_0)=y_0$. To (approximately) solve this using a neural network, the solution will be in the form
+\begin{equation*}
+    g(t) = 
+\end{equation*}
+
+We want to find a neural network that approximates $f$ on $K$.
+
+Denote the output of the neural network at input $x$ with weights and biases contained in $P$ by $N(x,P)$.
+
 
 %----------------------------------------------------------------
 \subsection{Project Theory 1}\label{sec:project theory}
