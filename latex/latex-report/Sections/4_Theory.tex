@@ -145,16 +145,18 @@ From \autoref{thrm:universal_approximation} it follows that we can approximate t
 
 In the following, suppose for simplicity that $f$ is a function from a compact interval $[t_0,t_1]$ of $\mathbb{R}$ into $\mathbb{R}$. Let $f$ be given by a differential equation
 \begin{equation*}
-    g(x,f'(x),f''(x),\ldots,f^{k}(x)) = 0
+    G(t,f'(t),f''(t),\ldots,f^{(k)}(t)) = 0
 \end{equation*}
-for some $k\in\mathbb{N}$ and all $x$ in the interior of $K$. Suppose further that $f(t_0)=y_0$. To (approximately) solve this using a neural network, the solution will be in the form
+for some $k\in\mathbb{N}$ and all $t$ in the interior of $K$. Suppose further that $f(t_0)=y_0$. To (approximately) solve this using a neural network $N$, the solution $g$ will be of the form
 \begin{equation*}
-    g(t) = 
+    g(t) = h(t) + F(t)N(t,P),\;\;\;\;t\in K.
 \end{equation*}
+Here $N(x,P)$ denotes the output of the neural network at input $t$ with weights and biases contained in $P$. The functions $h$ and $F$ are chosen such that $h$ satisfies the initial condition (i.e. $h(t_0)=y_0$), and $F(t)$ is zero for the initial $t$ (i.e. $F(t_0)=0$). This ensures that the solution $g$ satisfies the initial condition.
 
-We want to find a neural network that approximates $f$ on $K$.
-
-Denote the output of the neural network at input $x$ with weights and biases contained in $P$ by $N(x,P)$.
+To find the weights $P$, we minimize an appropriate loss function. Typically we chose some points $t_1,\ldots,t_N\in K$ and minimize the squared sum
+\begin{equation*}
+    \sum_{i=0}^N(G(t_i,g'(t_i),g''(t_i),\ldots g^{(k)}(t_i)))^2.
+\end{equation*}
 
 
 %----------------------------------------------------------------
