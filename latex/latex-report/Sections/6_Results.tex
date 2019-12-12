@@ -392,7 +392,7 @@ Number of epochs (FFNN) & 2000
 \autoref{fig:benchrun4} shows the results for Benchmark Problem 3. The computed Rayleigh quotients and the absolute error relative to the eigenvalue computed by Numpy are tabulated in \autoref{tab:eigbench4}. 
 
 \begin{figure}[H]
-\begin{center}\includegraphics[scale=0.5]{latex/figures/eigval_benchrun4.pdf}
+\begin{center}\includegraphics[scale=0.6]{latex/figures/eigval_benchrun4.pdf}
 \end{center}
 \caption{The computed Rayleigh quotients, $r$, as a function of time for both Euler's method and the FFNN model and the largest eigenvalue, $\lambda_\mathrm{max}$, of the matrix computed by Numpy's linalg.eig as well. The final Rayleigh quotients are rounded to 5 decimal points.}
 \label{fig:benchrun4}
@@ -411,9 +411,9 @@ Method & Rayleigh Quotient & Absolute Error
 \hline 
 Numpy & 1.0 & –
 \\
-Euler & 0.99999999 & $5.440 \cdot 10^{-10}$  
+Euler & -0.99999999 & $1.110 \cdot 10^{-15}$  
 \\
-FFNN & 0.99999626 & $3.736 \cdot 10^{-6}$
+FFNN & -0.99965815 & $3.418 \cdot 10^{-4}$
 \\
 \hline
 \hline 
@@ -423,14 +423,62 @@ FFNN & 0.99999626 & $3.736 \cdot 10^{-6}$
 
 DISCUSS
 
-fluctuating behavior, so small, attribute to computation error?
+Best Euler accuracy so far, FFNN not so much
 
 
+%===============================================================
+\subsubsection{Benchmark Problem 6}
+%===============================================================
+
+Benchmark Problem 5: 6x6 matrix and the effect of increased time and time points
+
+T=10 
+num epochs=2000
+Number of time points for euler and ffnn stated in respective plot title
+
+\autoref{fig:benchrun5}
+
+\begin{figure}[H]
+\centering
+\subfloat[]{{\includegraphics[scale=0.6]{latex/figures/eigval_run66a.pdf}}}
+\qquad
+\subfloat[]{{\includegraphics[scale=0.6]{latex/figures/eigval_run66b.pdf}}}
+\qquad
+\subfloat[]{{\includegraphics[scale=0.6]{latex/figures/eigval_run66c.pdf}}}
+\qquad
+\subfloat[]{{\includegraphics[scale=0.6]{latex/figures/eigval_run66d.pdf}}}
+\caption{Results for Benchmark Problem 5 with a $6\times 6$ real symmetric matrix, $A$. \textbf{(a)}  \textbf{(b)} }
+\label{fig:benchrun5}
+\end{figure}
 
 
+A-run:
+Max Eigval Numpy 1.824312910388423
+Final Rayleigh Quotient Euler 1.8233227444811393
+Final Rayleigh Quotient FFNN 1.8137606721307193
+Absolute Error Euler: 0.0009901659072837354
+Absolute Error FFNN: 0.010552238257703683
 
+B-run:
+Max Eigval Numpy 1.824312910388423
+Final Rayleigh Quotient Euler 1.8231808756711405
+Final Rayleigh Quotient FFNN 1.8162078906887702
+Absolute Error Euler: 0.0011320347172825151
+Absolute Error FFNN: 0.008105019699652827
 
+C-run:
+Max Eigval Numpy 1.824312910388423
+Final Rayleigh Quotient Euler 1.8230555626720195
+Final Rayleigh Quotient FFNN 1.814569152992347
+Absolute Error Euler: 0.0012573477164035118
+Absolute Error FFNN: 0.009743757396076136
 
+D-run:
+Max Eigval Numpy 1.824312910388423
+Final Rayleigh Quotient Euler 1.8230391272045274
+Final Rayleigh Quotient FFNN 1.8141099396232576
+Absolute Error Euler: 0.0012737831838955938
+Absolute Error FFNN: 0.010202970765165409
 
 
 
