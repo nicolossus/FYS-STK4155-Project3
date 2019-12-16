@@ -1,29 +1,6 @@
 %================================================================
 \section{Results and Discussion}\label{sec:Results}
 %================================================================
-\begin{table}[H]
-\caption{Table text}
-\centering
-\rowcolors{2}{gray!20}{white}
-\begin{tabular}{ccc}
-\hline
-\hline 
-$\alpha$ & $\beta$ & $\gamma$
-\\
-\hline 
-\hline 
-0.1 & 0.2 & 0.3
-\\
-0.4 & 0.5 & 0.6
-\\
-0.7 & 0.8 & 0.9
-\\
-\hline
-\hline 
-\end{tabular}
-\label{tab:tab1}
-\end{table}
-
 
 %===============================================================
 \subsection{Heat Equation}\label{sec:heateq results}
@@ -54,6 +31,8 @@ Mean diff: 0.003186288853514369
 CPU benchmark
 Number of iterations: 1000
 FE mean CPU time: 0.00158 secs
+
+Simulations with the Forward Euler scheme show that the time step restriction, $F \leq 1/2$, which means $\Delta t \leq \Delta x^2 / (2\alpha)$, may be relevant in the beginning of the diffusion process, when the solution changes quite fast, but as time increases, the process slows down, and a small $\Delta t$ may be inconvenient.
 
 %===============================================================
 \subsubsection{FFNN Model 1}
@@ -386,7 +365,7 @@ Number of epochs (FFNN) & 2000
 \hline
 \hline 
 \end{tabular}
-\label{tab:parabench3}
+\label{tab:parabench4}
 \end{table}
 
 \autoref{fig:benchrun4} shows the results for Benchmark Problem 3. The computed Rayleigh quotients and the absolute error relative to the eigenvalue computed by Numpy are tabulated in \autoref{tab:eigbench4}. 
@@ -440,47 +419,58 @@ Number of time points for euler and ffnn stated in respective plot title
 
 \begin{figure}[H]
 \centering
-\subfloat[]{{\includegraphics[scale=0.6]{latex/figures/eigval_run66a.pdf}}}
+\subfloat[]{{\includegraphics[scale=0.5]{latex/figures/eigval_run66a.pdf}}}
 \qquad
-\subfloat[]{{\includegraphics[scale=0.6]{latex/figures/eigval_run66b.pdf}}}
+\subfloat[]{{\includegraphics[scale=0.5]{latex/figures/eigval_run66b.pdf}}}
 \qquad
-\subfloat[]{{\includegraphics[scale=0.6]{latex/figures/eigval_run66c.pdf}}}
+\subfloat[]{{\includegraphics[scale=0.5]{latex/figures/eigval_run66c.pdf}}}
 \qquad
-\subfloat[]{{\includegraphics[scale=0.6]{latex/figures/eigval_run66d.pdf}}}
-\caption{Results for Benchmark Problem 5 with a $6\times 6$ real symmetric matrix, $A$. \textbf{(a)}  \textbf{(b)} }
+\subfloat[]{{\includegraphics[scale=0.5]{latex/figures/eigval_run66d.pdf}}}
+\caption{Results for Benchmark Problem 5 with a $6\times 6$ real symmetric matrix, $A$. The figure shows the time evolution of the Rayleigh quotient computed by Euler's method and the FFNN model with, respectively, the following time steps \textbf{(a)} 51 and 5, \textbf{(b)} 101 and 11, \textbf{(c)} 501 and 51, \textbf{(d)} 1001 and 101}
 \label{fig:benchrun5}
 \end{figure}
 
+As seen in the above figure, the largest eigenvalue computed by Numpy is
+\begin{equation*}
+    \lambda_\mathrm{max} \approx 1.824312
+\end{equation*}
 
-A-run:
-Max Eigval Numpy 1.824312910388423
-Final Rayleigh Quotient Euler 1.8233227444811393
-Final Rayleigh Quotient FFNN 1.8137606721307193
-Absolute Error Euler: 0.0009901659072837354
-Absolute Error FFNN: 0.010552238257703683
+The final Rayleigh quotients computed at different time steps and the absolute error relative to the eigenvalue computed by Numpy are tabulated in \autoref{tab:eigbench5}.
 
-B-run:
-Max Eigval Numpy 1.824312910388423
-Final Rayleigh Quotient Euler 1.8231808756711405
-Final Rayleigh Quotient FFNN 1.8162078906887702
-Absolute Error Euler: 0.0011320347172825151
-Absolute Error FFNN: 0.008105019699652827
+\begin{table}[H]
+\caption{The computed Rayleigh quotients at the final simulation time for both Euler's method and the FFNN model with different time steps. The absolute error relative to the eigenvalue computed by Numpy is also listed.}
+\centering
+\rowcolors{2}{gray!20}{white}
+\begin{tabular}{c|c|c|c}
+\hline
+\hline 
+Method & Number of Time Steps & Rayleigh Quotient & Absolute Error
+\\
+\hline 
+\hline 
+Euler & 51 & 1.823322 & 0.000990
+\\
+Euler & 101 & 1.823180 & 0.001132
+\\
+Euler & 501 & 1.823055 & 0.001257
+\\
+Euler & 1001 & 1.823039 & 0.001273
+\\
+FFNN & 5 & 1.813760 & 0.010552
+\\
+FFNN & 11 & 1.816207 & 0.008105
+\\
+FFNN & 51 & 1.814569 & 0.009743
+\\
+FFNN & 101 & 1.814109 & 0.010202
+\\
+\hline
+\hline 
+\end{tabular}
+\label{tab:eigbench5}
+\end{table}
 
-C-run:
-Max Eigval Numpy 1.824312910388423
-Final Rayleigh Quotient Euler 1.8230555626720195
-Final Rayleigh Quotient FFNN 1.814569152992347
-Absolute Error Euler: 0.0012573477164035118
-Absolute Error FFNN: 0.009743757396076136
-
-D-run:
-Max Eigval Numpy 1.824312910388423
-Final Rayleigh Quotient Euler 1.8230391272045274
-Final Rayleigh Quotient FFNN 1.8141099396232576
-Absolute Error Euler: 0.0012737831838955938
-Absolute Error FFNN: 0.010202970765165409
-
-
+Results indicate small number of time steps for Euler and 1 point per unit time (sikkert en bedre måte å si det på) for FFNN is best. However, in the Euler case this may just be for this particular matrix. Other test runs with random matrices have shown a better convergence with a time step that is neither to small or to large. In the FFNN case, this result match those of the test runs. The accuracy of the FFNN can be improved by increasing the number of epochs at the cost of computational speed.  
 
 
 
