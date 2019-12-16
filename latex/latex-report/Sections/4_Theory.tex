@@ -106,7 +106,7 @@ implying that $w'(t)\le 0$ for all $t>0$. On the other hand, since $w(t)\ge0$ fo
 %================================================================
 \subsection{Explicit Numerical Scheme Using Forward Euler}\label{sec:Heat numerical Theory}
 %================================================================
-This section is based on the procedure described in \cite{hpl}. We have here opted for deriving a scheme for the non-scaled PDE for more generality/to obtain more flexibility in the numerical model .
+This section is based on the procedure described in \cite{hpl}. We have here opted for deriving a scheme for the non-scaled PDE to obtain more flexibility in the numerical model.
 
 In order to derive the discrete set of equations to be solved, the domain $\qty[0,L]\times \qty[0,T]$ is discretized by replacing both the spatial and temporal domains by a set of uniform mesh points
 \begin{align*}
@@ -114,13 +114,20 @@ In order to derive the discrete set of equations to be solved, the domain $\qty[
     \intertext{and}
     t_n &= n \Delta t, \quad n=0, ..., N_t
 \end{align*}
-The mesh function, denoted $u_i^n$, then approximates the exact solution $u\qty(x_i, t_n)$ for $i=0, ..., N_x$ and $n=0, ..., N_t$. Requiring the PDE \autoref{eq:heat eq 1D} to
-
+The mesh function, denoted $u_i^n$, then approximates the exact solution $u\qty(x_i, t_n)$ for $i=0, ..., N_x$ and $n=0, ..., N_t$. Requiring the heat PDE in \autoref{eq:heat eq 1D} to be satisfied at each mesh point $\qty(x_i, t_n)$, $i=0, ..., N_x$ and $n=0, ..., N_t$, leads to the equation
+\begin{equation*}
+    \pdv{t} u\qty(x_i, t_n) = \alpha \pdv[2]{x} u \qty(x_i, t_n)
+\end{equation*}
+Replacing the first-order derivative with a forward difference approximation in time and the second-order derivative with a central difference approximation in space yields
+\begin{equation*}
+    \frac{u_i^{n+1}-u_i^n}{\Delta t} = \alpha \frac{u_{i+1}^n - 2u_i^n + u_{i-1}^n }{\Delta x^2},
+\end{equation*}
+which is the PDE turned into algebraic equations. We assume that the only unknown quantity is $u_i^{n+1}$. Solving with respect to this unknown gives
 
 \begin{equation}\label{eq:FE scheme}
     u_i^{n+1} = u_i^n + F \qty(u_{i+1}^n - 2u_i^n + u_{i-1}^n),
 \end{equation}
-where $F=\alpha \Delta t/\Delta x^2$
+where $F=\alpha \Delta t/\Delta x^2$ is a dimensionless number. The stability criterion for the explicit scheme requires that $F \leq 1/2$. 
 
 %================================================================
 \subsection{Solving Differential Equations With Neural Networks}
@@ -130,9 +137,9 @@ where $F=\alpha \Delta t/\Delta x^2$
 A \emph{squashing function} is a function $\psi\colon\mathbb{R}\to[0,1]$ that is monotonely increasing and with $\lim_{t\to\infty}\psi(t)=1$ and $\lim_{t\to -\infty}=0$.
 \end{definition}
 
-Denote by $\Sigma^n(\psi)$ the set of all output functions for single hidden layer feed-forward networks with $n$ real-valued inputs, having $\psi$ as squashing function at the hidden layer, and no squashing at the output. That is, $\Sigma^n(\psi)$ is the collection of functions $f\colon\mathbb{R}^n\to\mathbb{R}$ of the form
+Denote by $\Sigma^n(\psi)$ the set of all output functions for single hidden layer feed-forward networks with $n$ real-valued inputs, having $\psi$ as squashing function at the hidden layer, and no squashing at the output. That is, $\Sigma^n(\psi)$ is the collection of functions $\phi\colon\mathbb{R}^n\to\mathbb{R}$ of the form
 \begin{equation*}
-    f(x)=\sum_{i=1}^m\beta_i\psi(w^T_ix + b_i),\;\;\;\;x,w_i\in\mathbb{R}^n,\beta_i,b_i\in\mathbb{R},m\in\mathbb{N}.
+    \phi(x)=\sum_{i=1}^m\beta_i\psi(w^T_ix + b_i),\;\;\;\;x,w_i\in\mathbb{R}^n,\beta_i,b_i\in\mathbb{R},m\in\mathbb{N}.
 \end{equation*}
 
 Given a subspace $K\subseteq\mathbb{R}^n$, let $C(K)$ be the set of all continuous functions from $K\subseteq\mathbb{R}^n$ into $\mathbb{R}$.
@@ -143,7 +150,7 @@ For any squashing function $\psi$ and any $n\in\mathbb{N}$ and $K\subseteq\mathb
 
 From \autoref{thrm:universal_approximation} it follows that we can approximate the solutions of differential equations on compact subsets of $\mathbb{R}^n$ with neural networks.
 
-In the following, suppose for simplicity that $f$ is a function from a compact interval $[t_0,t_1]$ of $\mathbb{R}$ into $\mathbb{R}$. Let $f$ be given by a differential equation
+In the following, suppose for simplicity that $f$ is a function from a compact interval $[t_0,t_1]$ of $\mathbb{R}$ into $\mathbb{R}$. A similar discussion applies to $f$ with range $\mathbb{R}^n$ and domain in $\mathbb{R}^n$ with any $n,m\in\mathbb{N}$. Let $f$ be given by a differential equation
 \begin{equation*}
     G(t,f'(t),f''(t),\ldots,f^{(k)}(t)) = 0
 \end{equation*}
@@ -153,7 +160,7 @@ for some $k\in\mathbb{N}$ and all $t$ in the interior of $K$. Suppose further th
 \end{equation*}
 Here $N(x,P)$ denotes the output of the neural network at input $t$ with weights and biases contained in $P$. The functions $h$ and $F$ are chosen such that $h$ satisfies the initial condition (i.e. $h(t_0)=y_0$), and $F(t)$ is zero for the initial $t$ (i.e. $F(t_0)=0$). This ensures that the solution $g$ satisfies the initial condition.
 
-To find the weights $P$, we minimize an appropriate loss function. Typically we chose some points $t_1,\ldots,t_N\in K$ and minimize the squared sum
+To find the weights $P$, we choose some points $t_1,\ldots,t_N\in K$ and minimize the squared sum
 \begin{equation*}
     \sum_{i=0}^N(G(t_i,g'(t_i),g''(t_i),\ldots g^{(k)}(t_i)))^2.
 \end{equation*}
@@ -173,7 +180,7 @@ where $I\in\mathbb{R}^{n\times n}$ is the identity matrix. Let $x\colon\mathbb{R
     Dx(t)=-x(t)+f(x(t)).
 \end{equation}
 We then have the following theorem \cite{yfh04}:
-\begin{theorem}
+\begin{theorem}\label{thrm:eigenvector_convergence}
 For each solution $x\colon\mathbb{R}\to\mathbb{R}^n$ of \autoref{eq:diff_eigen}, the limit $\lim_{t\to\infty}x(t)$ exists and converges to an eigenvector of $A$.
 
 If $\lambda$ is the largest eigenvalue of $A$ and the starting point $x(0)$ is not orthogonal to the eigenspace of $\lambda$, then $\lim_{t\to\infty}x(t)$ is an eigenvector of $A$ with eigenvalue $\lambda$.
@@ -181,7 +188,7 @@ If $\lambda$ is the largest eigenvalue of $A$ and the starting point $x(0)$ is n
 Replacing $A$ with $-A$, then if $x(0)$ is not orthogonal to the eigenspace of the smallest eigenvalue $\sigma$ of $A$, the limit $\lim_{t\to\infty}x(t)$ converges to an eigenvector corresponding to $\sigma$.
 \end{theorem}
 
-\begin{definition}[Rayleigh quotient {\cite[234]{hj13}}]
+\begin{definition}[Rayleigh quotient {\cite[234]{hj13}}]\label{def:rayleigh_quotient}
 Given a matrix $A\in\mathbb{R}^{n\times n}$ and a vector $x\in\mathbb{R}^n$, the \emph{Rayleigh quotient} is defined as
 \begin{equation*}
     r(A,x) = \frac{x^TAx}{x^Tx}.
