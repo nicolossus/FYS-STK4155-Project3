@@ -110,19 +110,74 @@ Following the discussion in \autoref{sec:Heat numerical Theory}, the computation
 \subsection{The Eigenvalue Problem}\label{sec:eigen method}
 %----------------------------------------------------------------
 
+Similarly to how we found an FFNN solution to the heat equation, we want to find an FFNN solution $g$ to \autoref{eq:diff_eigen} for a given real symmetric matrix $A\in\mathbb{R}^{n\times n}$. The starting point $x_0$ is chosen such that it is not orthogonal to the eigenspace of the largest eigenvalue $\lambda$ of $A$. The ending point $T$ of the domain $[0,T]$ of the solution is chosen large enough that the graphs of the components of $g$ flatten out. We use, by \autoref{thrm:eigenvector_convergence}, $g(T)$ as an approximation to an eigenvector corresponding to $\lambda$. The value of $\lambda$ is approximated by calculating the the Rayleigh quotient as given in \autoref{def:rayleigh_quotient}.
 
-Draw network architecture 
+\begin{figure}[H]
+\begin{center}
+\def\layersep{3cm}
+\def\nodeinlayersep{1.5cm}
+\begin{tikzpicture}[
+   shorten >=1pt,->,
+   draw=black!50,
+    node distance=\layersep,
+    every pin edge/.style={<-,shorten <=1pt},
+    neuron/.style={circle,fill=black!25,minimum size=17pt,inner sep=0pt},
+    input neuron/.style={neuron, fill=green!50},
+    output neuron/.style={neuron, fill=red!50},
+    hidden neuron/.style={neuron, fill=blue!50},
+    annot/.style={text width=4em, text centered}
+]
+    % Draw the input layer nodes
+    \foreach \name / \y in {1/3}
+    % This is the same as writing \foreach \name / \y in {1/1,2/2,3/3,4/4}
+        \node[input neuron, pin=left:Input $t$] (I-\name) at (0,-\y) {};
+    % set number of hidden layers
+    \newcommand\Nhidden{3}
+    % Draw the hidden layer nodes
+    \foreach \N in {1,...,\Nhidden} {
+       \foreach \y in {1,...,12} {
+          \path[yshift=6cm]
+          node[hidden neuron] (H\N-\y) at (\N*\layersep,-\y*\nodeinlayersep ) {$\frac{1}{1+e^{-y}}$};
+           }
+    \node[annot,above of=H\N-1, node distance=1cm] (hl\N) {Hidden layer \N};
+    }
+    % Draw the output layer node
+    \foreach \name / \y in {1,2,3,4,5,6}
+        \node[output neuron,pin={[pin edge={->}]right:$x^{(\name)}$}, right of=H\Nhidden-6] (O-\name) at (9,-\y) {};
+%
+    % Connect every node in the input layer with every node in the
+    % hidden layer.
+    \foreach \source in {1}
+        \foreach \dest in {1,...,12}
+            \path (I-\source) edge (H1-\dest);
+    % connect all hidden stuff
+    \foreach [remember=\N as \lastN (initially 1)] \N in {2,...,\Nhidden}
+       \foreach \source in {1,...,12}
+           \foreach \dest in {1,...,12}
+               \path (H\lastN-\source) edge (H\N-\dest);
+    % Connect every node in the hidden layer with the output layer
+    \foreach \source in {1,...,12}
+        \foreach \name in {1,...,6}
+        \path (H\Nhidden-\source) edge (O-\name);
+    % Annotate the layers
+    \node[annot,left of=hl1] {Input layer};
+    \node[annot,right of=hl\Nhidden] {Output layer};
+\end{tikzpicture}
+\end{center}
+\caption{The feed-forward neural network of choice in the case of $A\in\mathbb{R}^{6\times 6}$. Hidden layer 1 consists of $100$ nodes, hidden layer 2 consists of $50$ nodes, and hidden layer 3 consists of $25$ nodes. Sigmoid is the activation function for all nodes.}
+\label{fig:benchrun4}
+\end{figure}
 
-In this notebook, a FFNN model is employed to learn the solution to the nonlinear, coupled ODE, presented by Yi et. al in \cite{yfh04}, describing the state of a CTRNN model. Given a real symmetric matrix $A$ in the source term, the temporal dynamic described by this ODE has convergence properties to the largest eigenvalue. Simply replacing $A$ with $-A$ yield the smallest eigenvalue
-
-The article also states that the network should converge to a different eigenvalue if the initial vector, $\mathbf{x}_0$, is orthogonal to the eigenvector corresponding to the largest eigenvalue.
-
-FFNN model is employed within the \cw{TensorFlow} framework
+The FFNN model is employed within the \cw{TensorFlow} framework.
 
 
 The aim is to design a FFNN model suitable for solving this ODE, and check if it succeed in computing both the largest and smallest eigenvalue for some benchmark $3\times 3$ and $6\times 6$ real symmetric matrices. We will also check whether the network converges to a different eigenvalue than the largest if $\mathbf{x}_0$ is chosen to be orthogonal to the eigenvector corresponding to the largest eigenvalue. 
 
 In order to assess the FFNN model, we will compare the result with those from Euler's method for solving the same ODE and  \cw{Numpy's linalg.eig} which directly computes the eigenvalues of the matrix $A$.
+
+2000 epochs
+
+We always ensure that the starting point $x_0$ is a unit vector, as this made the convergence of the weights and biases of the network easier. Note that by the proof of \cite[Theorem 2]{yfh04}, the norm of $x(t),t>0$ is constant.
 
 %==============================================================
 \subsubsection{Benchmark Problem 1}\label{sec:benchmark problem 1}
@@ -133,7 +188,7 @@ Benchmark Problems with 3x3 matrix
     A = \left(\begin{array}{ccc}
         3 & 2 & 4  \\
         2 & 0 & 2  \\
-        4 & 2 & 3
+        4 & 2 & 3,
     \end{array}\right)
 \end{equation}
 with eigenvalues $\lambda_1 = 8$ and $\lambda_2 = \lambda_3 = -1$.
@@ -143,24 +198,47 @@ Largest Eigenvalue of a 3x3 Matrix
 %==============================================================
 \subsubsection{Benchmark Problem 2}\label{sec:benchmark problem 2}
 %==============================================================
-Smallest eigenvalue (negative A),
-we use the same matrix as in Benchmark Problem 1, given by \autoref{eq:33mat}
+\begin{equation}\label{eq:33mat2}
+    A = \left(\begin{array}{ccc}
+        2 & 1 & 0 \\
+        1 & 2 & 1 \\
+        0 & 1 & 2,
+    \end{array}\right)
+\end{equation}
+with eigenvalues $\lambda_1 = 2+\sqrt{2}$, $\lambda_2 = 2$ and $\lambda_3 = 2-\sqrt{2}$.
 
+We solve the differential equation for $-A$. We then calculate the Rayleigh quotient $r(A,g(T))$ to approximate the smallest eigenvalue of $A$.
 
 %==============================================================
 \subsubsection{Benchmark Problem 3}\label{sec:benchmark problem 3}
 %==============================================================
-Degenerated eigenvalues effect on steady-state vector with initial vector somewhere between actual eigenvectors
+\begin{equation}\label{eq:33mat2}
+    A = \left(\begin{array}{ccc}
+        3 & 1 & -1 \\
+        1 & 3 & -1 \\
+        -1 & -1 & 5,
+    \end{array}\right)
+\end{equation}
+with $\lambda_1 = 6$, $\lambda_2 = 2$ and $\lambda_3 = 3$.
+
+This time we choose initial point $x_0=(-1, 1, 0)$, which is orthogonal to the eigenspace corresponding to the largest eigevalue $\lambda_1$ of $A$. We therefore expect $g(T)$ to approximate an eigenvector not corresponding to $\lambda_1$. Note that since all the eigenvectors of $A$ are orthogonal, $x_0$ is itself an eigenvector, namely one corresponding to $\lambda_2$.
+
 
 %==============================================================
-\subsubsection{Benchmark Problem 4}\label{sec:benchmark problem 4}
+\subsubsection{Benchmark Problem 4: 6x6 matrix and the effect of number of time points}\label{sec:benchmark problem 4}
 %==============================================================
-Initial vector orthogonal to eigenvector corresponding to largest eigenvalue
-
-positive A again, 
-
-eigenvector corresponding to largest eigenvalue: (2/3, 1/3, 2/3).
-
-Initial vector orthogonal to: (1, 0, -1) 
-
-Since the only other possible eigenvalue is -1, we expect that this is the value r converges toward
+We use the randomly generated $6\times 6$-matrix $A$ which when rounded to eight decimal places looks like
+\begin{equation}\label{eq:33mat2}
+    \left(\begin{array}{cccccc}
+        0.49671415 & 0.72047426 & 0.4448254 &  0.30750289 & -0.38926805 & -0.41792178 \\
+        0.4448254 & -1.19137732 & -1.72491783 & 0.45168062 & -1.08191235 & 0.15037505 \\
+        0.30750289 & -0.43487183 & 0.45168062 & -0.2257763 &  0.22161311 & -1.24122956 \\
+        -0.38926805 & -0.17624755 & -1.08191235 & 0.22161311 & -0.60063869 & 0.26542558 \\
+        -0.41792178 & 0.69327422 & 0.15037505 & -1.24122956 & 0.26542558 & -1.22084365,
+    \end{array}\right)
+\end{equation}
+and has eigenvalues $\lambda_1 = -3.13078844$, $\lambda_2=1.82431291$, $\lambda_3 = 1.21134579$ $\lambda_4=-0.81694732$,  $\lambda_5=0.15215664$ and $\lambda_6=-1.74810717$. The initial point is randomly chosen as
+\begin{equation*}
+    x_0 = (0.20819531, 0.34735924, 0.3651539,  0.12346636, 0.6475964,  0.51771987).
+\end{equation*}
+We solve the differential equation with $A$ and approximate the largest eigenvalue. We do this for different number of time steps, $Nt=5, 11,51,101$. The end point of the domain $[0,T]$ of the solution is always $T=10$. For comparison we also vary the number of time steps for the Euler method. The number of time steps we consider are $N=51,101,501,1001$.
