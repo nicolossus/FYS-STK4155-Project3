@@ -49,8 +49,7 @@ def loss(model, A, x0, t):
     with tf.GradientTape() as tape:
         tape.watch(t)
         trial = trial_solution(model, x0, t)
-    d_trial_dt = tape.batch_jacobian(trial, t)
-    d_trial_dt = d_trial_dt[:, :, 0]
+    d_trial_dt = tape.batch_jacobian(trial, t)[:, :, 0]
     return tf.losses.MSE(d_trial_dt, rhs(model, A, x0, t))
 
 
@@ -64,13 +63,10 @@ def grad(model, A, x0, t):
 
 def ray_quo(A, x):
     """Rayleigh quotient"""
-    x = x / tf.sqrt(tf.einsum("ij,ij->i", x, x)[:, tf.newaxis])
-    return tf.einsum("ij,ij->i", tf.matmul(x, A), x)
-
-# Define Euler's method
+    return tf.einsum('ij,jk,ik->i', x, A, x) / tf.einsum('ij,ij->i', x, x)
 
 
-def euler_eig(A, x0, T, N):
+def euler_ray_quo(A, x0, T, N):
     """Euler's method"""
     dt = T / N
     x = [x0]
@@ -79,31 +75,28 @@ def euler_eig(A, x0, T, N):
                                x[-1] - (x[-1].T @ A) @ x[-1] * x[-1]))
 
     x = np.array(x)
-    x = x / np.sqrt(np.einsum("ij,ij->i", x, x)[:, np.newaxis])
-    eig = np.einsum("ij,ij->i", x @ A, x)
+    ray_quo = np.einsum('ij,jk,ik->i', x, A, x) / np.einsum('ij,ij->i', x, x)
 
-    return x, eig
+    return x, ray_quo
 
 
 if __name__ == "__main__":
 
-    tf.random.set_seed(42)
-    np.random.seed(42)
+    np.random.seed(43)
+    tf.random.set_seed(43)
+    n = 6     # Dimension
+    T = 10    # Final time
+    N = 10001  # number of time points (Euler)
+    t = np.linspace(0, T, N)
 
     # Define problem
-    n = 6    # Dimension
-    T = 10  # Final time
-    N = 1001  # number of time points
-
-    # Benchmark problem
     A = np.random.normal(0, 1, (n, n))
     A = (A.T + A) * 0.5
     x0 = np.random.rand(n)
-    x0 = x0 / np.linalg.norm(x0, ord=1)
-    t = np.linspace(0, T, N)
+    x0 = x0 / np.linalg.norm(x0)
 
     # Problem formulation for tensorflow
-    Nt = 11
+    Nt = 11   # number of time points (FFNN)
     A_tf = tf.convert_to_tensor(A, dtype=tf.float64)
     x0_tf = tf.convert_to_tensor(x0, dtype=tf.float64)
     start = tf.constant(0, dtype=tf.float64)
@@ -114,7 +107,7 @@ if __name__ == "__main__":
     # Initial model and optimizer
     model = DNModel(n)
     optimizer = tf.keras.optimizers.Adam(0.01)
-    num_epochs = 4000
+    num_epochs = 2000
 
     for epoch in range(num_epochs):
         cost, gradients = grad(model, A, x0_tf, t_tf)
@@ -129,10 +122,13 @@ if __name__ == "__main__":
                   f"Loss: {tf.math.reduce_mean(cost.numpy())}")
 
     # Call models
-    x_euler, eig_euler = euler_eig(A, x0, T, N)
+    x_euler, eig_euler = euler_ray_quo(A, x0, T, N)
 
-    g = trial_solution(model, x0_tf, t_tf)
+    s = t.reshape(-1, 1)
+    g = trial_solution(model, x0_tf, s)
+    g_points = trial_solution(model, x0_tf, t_tf)
     eig_nn = ray_quo(A_tf, g)
+    eig_nn_points = ray_quo(A_tf, g_points)
 
     # Print results
     v, w = np.linalg.eig(A)
@@ -141,21 +137,24 @@ if __name__ == "__main__":
     print('x0 =', x0)
     print('Eigvals Numpy:', v)
     print('Max Eigval Numpy', np.max(v))
-    print('Final Eigval Euler', eig_euler[-1])
-    print('Final Eigval FFNN', eig_nn.numpy()[-1])
+    print('Final Rayleigh Quotient Euler', eig_euler[-1])
+    print('Final Rayleigh Quotient FFNN', eig_nn.numpy()[-1])
+    print('Absolute Error Euler:', np.abs(np.max(v) - eig_euler[-1]))
+    print('Absolute Error FFNN:', np.abs(np.max(v) - eig_nn.numpy()[-1]))
 
     # Plot eigenvalues
     fig, ax = plt.subplots()
     ax.axhline(np.max(v), color='red', ls='--')
     ax.plot(t, eig_euler)
-    ax.plot(t_tf, eig_nn)
+    ax.plot(s, eig_nn)
+    ax.scatter(t_tf, eig_nn_points, color='orange')
     ax.set_xlabel('Time, $t$')
-    ax.set_ylabel('Eigenvalue, $\\lambda$')
+    ax.set_ylabel('Rayleigh Quotient, $r$')
     lgd_numpy = "Numpy $\\lambda_{\\mathrm{max}} \\sim$ " + \
         str(round(np.max(v), 5))
-    lgd_euler = "Euler $\\lambda_{\\mathrm{final}} \\sim$ " + \
+    lgd_euler = "Euler $r_{\\mathrm{final}} \\sim$ " + \
         str(round(eig_euler[-1], 5))
-    lgd_nn = "FFNN $\\lambda_{\\mathrm{final}} \\sim$ " + \
+    lgd_nn = "FFNN $r_{\\mathrm{final}} \\sim$ " + \
         str(round(eig_nn.numpy()[-1], 5))
     plt.legend([lgd_numpy, lgd_euler, lgd_nn], loc='best')
     plt.show()
