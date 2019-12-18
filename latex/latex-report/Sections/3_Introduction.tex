@@ -2,12 +2,27 @@
 \section{Introduction}\label{sec:Introduction}
 %================================================================
 
-Differential equations have a wide range of applications. The aim of this project is to design feed-forward neural network (FFNN) models suitable for solving differential equations. 
+Differential equations have a wide range of applications in the natural sciences. The aim of this project is to design feed-forward neural network (FFNN) models suitable for solving differential equations. 
 
 extracting eigenvalues
 
 
-and, if the eigenvalue is not degenerated, computes the corresponding eigenvector upon time evolution of the model. 
+
+
+In this notebook, an FFNN model is employed within the TensorFlow framework to learn the solution to the nonlinear, coupled ODE, presented by Yi et. al in the article from [Computers and Mathematics with Applications 47, 1155 (2004)](https://www.sciencedirect.com/science/article/pii/S0898122104901101), describing the state of a CTRNN model. Given a real symmetric matrix $A$ in the source term, the temporal dynamic described by this ODE has convergence properties to an eigenvector corresponding to the largest eigenvalue $\lambda$, given that the initial vector $\mathbf{x}_0$ is not orthogonal to the eigenspace of $\lambda$. If $\mathbf{x}_0$ is not orthogonal to the eigenspace of the smallest eigenvalue $\sigma$, replacing $A$ with $-A$ yields an eigenvector corresponding to $\sigma$. The eigenvalue itself is calculated with the Rayleigh quotient.
+
+The aim is to check if the constructed FFNN succeeds in computing both the largest and smallest eigenvalue for some benchmark $3\times 3$ and $6\times 6$ real symmetric matrices. We will also try choosing $\mathbf{x}_0$ orthogonal to the eigenspace corresponding to the largest eigenvalue, to make the network converge to an eigenvalue different from the largest. This starting point will itself be an eigenvector.
+
+In order to assess the FFNN model, we will compare the result with those from Euler's method for solving the same ODE and Numpy's ``linalg.eig`` which directly computes the eigenvalues of the matrix $A$. 
+
+Unfortunately, we found tensorflow objects (such as tensorflow functions) hard to reuse. There is therefore much repetitive code in the code cells below. This notebook is organized such that each code cell have all the necessary code, except imports, to solve a particular problem. To better distinguish what problem a particular code cell solves, we have added headers that explains the problem at hand.
+
+%%%
+%%%
+%%%
+%%%
+
+and computes the corresponding eigenvector upon time evolution of the model. 
 
 The temporal dynamic of the CTRNN describes the state of the network, and has convergence properties to the steady  
 
