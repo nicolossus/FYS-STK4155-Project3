@@ -2,7 +2,9 @@
 \section{Introduction}\label{sec:Introduction}
 %================================================================
 
-Differential equations have a wide range of applications 
+Differential equations have a wide range of applications. The aim of this project is to design feed-forward neural network (FFNN) models suitable for solving differential equations. 
+
+extracting eigenvalues
 
 
 and, if the eigenvalue is not degenerated, computes the corresponding eigenvector upon time evolution of the model. 
@@ -10,11 +12,6 @@ and, if the eigenvalue is not degenerated, computes the corresponding eigenvecto
 The temporal dynamic of the CTRNN describes the state of the network, and has convergence properties to the steady  
 
 given a real symmetric matrix, solution gives a steady-state vector which can be taken as an
-
-temporal dynamic of neural network
-
-extracting
-
 
 The proposed network model is described by differential equations, which is a class of continuous time recurrent neural network model. 
 
@@ -35,29 +32,3 @@ compare with euler's method and traditional numerical eigenvalue solvers.
 Employ a feed-forward neural network to learn the solution of the heat equation in one spatial dimension. The network was trained on a grid with 11 points with the both the spatial, $x$, and temporal, $t$, domain $x, t \in [0,1]$. The trained network was then given a larger grid with 41 points to interpolate the solution on. Mean difference from analytic solution ...
 
 
-
-Nyttige lenker:
-
-\url{https://krisbhei.github.io/DEnet/DNN_Diffeq/DNN_diffeq_html.html?fbclid=IwAR2XiOCNNf8XFbj3xtk3JeVaIkvJ4bDKAo2uo_fa7nwsaCli0I-CjNfI2vw}
-
-\url{https://compphysics.github.io/MachineLearning/doc/pub/odenn/html/odenn.html?fbclid=IwAR2otu_WD_5hCfc7qYPVEGU5oso4qxB56KVc9xYerbxj1_qZnwzN7oB2MWU}
-
-\url{https://becominghuman.ai/neural-networks-for-solving-differential-equations-fa230ac5e04c} 
-
-Theory
-
-The Heat Equation 
-
-Closed Form of the Heat Equation
-
-Explicit Numerical Scheme Using Forward Euler
-
-Feed Forward Neural Network
-
-Solving the Heat Equation with FFNN 
-- trial solution
-
-Eigenvalue Problem
-- stuff from paper
-- Euler's method for solving ODE (for comparison)
-- Numpy eig
