@@ -131,10 +131,6 @@ Mean diff: 0.003950743671390742
 \label{fig:heat_nn4}
 \end{figure}
 
-%===============================================================
-\subsubsection{Home-made FFNN}
-%===============================================================
-
 
 %===============================================================
 %===============================================================
@@ -163,13 +159,13 @@ Parameter & Numerical Value
 \hline 
 Initial vector & $\bm{x_0}=(1,0,0)$
 \\
-Simulation time & 1
+Simulation time & $T=1$
 \\
-Number of time points (Euler) & 101
+Number of time points (Euler) & 10\,000
 \\
 Number of time points (FFNN) & 11
 \\
-Number of epochs (FFNN) & 2000
+Number of epochs (FFNN) & 2\,000
 \\
 \hline
 \hline 
@@ -185,7 +181,7 @@ Number of epochs (FFNN) & 2000
 \subfloat[]{{\includegraphics[scale=0.6]{latex/figures/eigvec_comp_benchrun1.pdf}}}
 \qquad
 \subfloat[]{{\includegraphics[scale=0.6]{latex/figures/eigval_benchrun1.pdf}}}
-\caption{Results for Benchmark Problem 1 with a $3\times 3$ real symmetric matrix, $A$. \textbf{(a)} shows the components of the computed steady-state vector as a function of time. The dashed lines are the components computed by Euler's method and the solid lines are computed by the FFNN model. The dotted lines are the normalized (unit "length") eigenvector components corresponding to the largest eigenvalue computed directly from the matrix by Numpy's linalg.eig. \textbf{(b)} shows the computed Rayleigh quotients, $r$, as a function of time for both Euler's method and the FFNN model and the largest eigenvalue, $\lambda_\mathrm{max}$, of the matrix computed by Numpy's linalg.eig as well. The final Rayleigh quotients are rounded to 5 decimal points.}
+\caption{Results for Benchmark Problem 1 with a $3\times 3$ real symmetric matrix $A$. \textbf{(a)} shows the components of the computed steady-state vector as a function of time. The dashed lines are the components computed by Euler's method and the solid lines are computed by the FFNN model. The dotted lines are the normalized eigenvector components corresponding to the largest eigenvalue computed directly from the matrix by Numpy's linalg.eig. \textbf{(b)} shows the computed Rayleigh quotients, $r$, as a function of time for both Euler's method and the FFNN model and the largest eigenvalue, $\lambda_\mathrm{max}$, of the matrix computed by Numpy's inalg.eig as well. The final Rayleigh quotients are rounded to 5 decimal points.}
 \label{fig:benchrun1}
 \end{figure}
 
@@ -202,9 +198,9 @@ Method & Rayleigh Quotient & Absolute Error
 \hline 
 Numpy & 8.0 & –
 \\
-Euler & 7.99999993 & $6.007 \cdot 10^{-8}$  
+Euler & 7.99999983 & $1.697 \cdot 10^{-7}$  
 \\
-FFNN & 7.99999803 & $1.967 \cdot 10^{-6}$
+FFNN & 7.99999721 & $2.792 \cdot 10^{-6}$
 \\
 \hline
 \hline 
@@ -212,24 +208,49 @@ FFNN & 7.99999803 & $1.967 \cdot 10^{-6}$
 \label{tab:eigbench1}
 \end{table}
 
-The eigenvalue computed by Numpy correspond to the analytical solution in this case. Euler achieves higher accuracy
-
-DISCUSSION
+The two solutions shown in \autoref{fig:benchrun1} follow each other closely, and already at $t=1$ they give fairly accurate approximations of the eigenvector corresponding to $\lambda_\mathrm{max}$. The eigenvalue approximation is even more accurate. Euler achieves the highest accuracy and requires far less time to run.
 
 %===============================================================
 \subsubsection{Benchmark Problem 2}
 %===============================================================
 
-The problem and model parameters for Benchmark Problem 2, described in \autoref{sec:benchmark problem 2}, are the same as for Benchmark Problem 1 tabulated in \autoref{tab:parabench1}. The difference for this problem is that the matrix has opposite signs, $-A$, i.e. we are finding the smallest eigenvalue of $A$.
+The problem and model parameters for Benchmark Problem 2 are described in \autoref{sec:benchmark problem 2}. In this problem we find the smallest eigenvalue of $A$.
 
-\autoref{fig:benchrun2} shows the results for Benchmark Problem 2. The computed Rayleigh quotients and the absolute error relative to the eigenvalue computed by Numpy are tabulated in \autoref{tab:eigbench2}. 
+\begin{table}[H]
+\caption{Problem and model parameters for Benchmark Problem 2.}
+\centering
+\rowcolors{2}{gray!20}{white}
+\begin{tabular}{c|c}
+\hline
+\hline 
+Parameter & Numerical Value
+\\
+\hline 
+\hline 
+Initial vector & $\bm{x_0}=(0.8165, -0.4082,  0.4082)$
+\\
+Simulation time & $T=3.5$
+\\
+Number of time points (Euler) & 10\,000
+\\
+Number of time points (FFNN) & 11
+\\
+Number of epochs (FFNN) & 2\,000
+\\
+\hline
+\hline 
+\end{tabular}
+\label{tab:parabench1}
+\end{table}
+
+\autoref{fig:benchrun2} shows the results. The computed Rayleigh quotients and the absolute error relative to the eigenvalue computed by Numpy are tabulated in \autoref{tab:eigbench2}. 
 
 \begin{figure}[H]
 \centering
 \subfloat[]{{\includegraphics[scale=0.6]{latex/figures/eigvec_comp_benchrun2.pdf}}}
 \qquad
 \subfloat[]{{\includegraphics[scale=0.6]{latex/figures/eigval_benchrun2.pdf}}}
-\caption{Results for Benchmark Problem 2 with a $3\times 3$ real symmetric matrix, $-A$. \textbf{(a)} shows the components of the computed steady-state vector as a function of time. The dashed lines are the components computed by Euler's method and the solid lines are computed by the FFNN model. The dotted lines are the normalized (unit "length") eigenvector components corresponding to the largest eigenvalue computed directly from the matrix by Numpy's linalg.eig. \textbf{(b)} shows the computed Rayleigh quotients, $r$, as a function of time for both Euler's method and the FFNN model and the largest eigenvalue, $\lambda_\mathrm{max}$, of the matrix computed by Numpy's linalg.eig as well. The final Rayleigh quotients are rounded to 5 decimal points.}
+\caption{Results for Benchmark Problem 2 with a $3\times 3$ real symmetric matrix $A$. \textbf{(a)} shows the components of the computed steady-state vector as a function of time. The dashed lines are the components computed by Euler's method and the solid lines are computed by the FFNN model. The dotted lines are the normalized eigenvector components corresponding to the largest eigenvalue computed directly from the matrix by Numpy's linalg.eig. \textbf{(b)} shows the computed Rayleigh quotients, $r$, as a function of time for both Euler's method and the FFNN model, and the largest eigenvalue $\lambda_\mathrm{max}$ of the matrix as computed by Numpy's linalg.eig as well. The final Rayleigh quotients are rounded to 5 decimal points.}
 \label{fig:benchrun2}
 \end{figure}
 
@@ -244,11 +265,11 @@ Method & Rayleigh Quotient & Absolute Error
 \\
 \hline 
 \hline 
-Numpy & 1.0 & –
+Numpy & 0.58578644 & –
 \\
-Euler & 0.99999995 & $4.112 \cdot 10^{-8}$  
+Euler & 0.58579371 & $7.273 \cdot 10^{-6}$  
 \\
-FFNN & 0.99997506 & $2.493 \cdot 10^{-5}$
+FFNN & 0.58579257 & $6.129 \cdot 10^{-6}$
 \\
 \hline
 \hline 
@@ -256,9 +277,7 @@ FFNN & 0.99997506 & $2.493 \cdot 10^{-5}$
 \label{tab:eigbench2}
 \end{table}
 
-
-DISCUSS
-
+The convergence as $t\to\infty$ was slower this time than in benchmark problem 1, but at $t=3.5$ both the Rayleigh quotients give an eigenvalue approximation that is accurate to five decimal places.
 
 %===============================================================
 \subsubsection{Benchmark Problem 3}
@@ -277,11 +296,11 @@ Parameter & Numerical Value
 \\
 \hline 
 \hline 
-Initial vector & $\bm{x_0}=(-0.6, -0.6,  0.6)$
+Initial vector & $\bm{x_0}=(-0.707, 0.707, 0)$
 \\
-Simulation time & 1
+Simulation time & T=1
 \\
-Number of time points (Euler) & 101
+Number of time points (Euler) & 10\,000
 \\
 Number of time points (FFNN) & 11
 \\
@@ -294,14 +313,14 @@ Number of epochs (FFNN) & 2000
 \end{table}
 
 
-\autoref{fig:benchrun3} shows the results for Benchmark Problem 3. The computed Rayleigh quotients and the absolute error relative to the eigenvalue computed by Numpy are tabulated in \autoref{tab:eigbench3}. 
+\autoref{fig:benchrun3} shows the results for Benchmark Problem 3. The computed Rayleigh quotients and the absolute error relative to the eigenvalue computed by Numpy are tabulated in \autoref{tab:eigbench3}.
 
 \begin{figure}[H]
 \centering
 \subfloat[]{{\includegraphics[scale=0.6]{latex/figures/eigvec_comp_benchrun3.pdf}}}
 \qquad
 \subfloat[]{{\includegraphics[scale=0.6]{latex/figures/eigval_benchrun3.pdf}}}
-\caption{Results for Benchmark Problem 2 with a $3\times 3$ real symmetric matrix, $-A$. \textbf{(a)} shows the components of the computed steady-state vector as a function of time. The dashed lines are the components computed by Euler's method and the solid lines are computed by the FFNN model. In this case, there are two eigenvectors corresponding to the largest eigenvalue. The dotted and dotdashed lines are the normalized (unit "length") eigenvector components corresponding to the largest eigenvalue computed directly from the matrix by Numpy's linalg.eig. \textbf{(b)} shows the computed Rayleigh quotients, $r$, as a function of time for both Euler's method and the FFNN model and the largest eigenvalue, $\lambda_\mathrm{max}$, of the matrix computed by Numpy's linalg.eig as well. The final Rayleigh quotients are rounded to 5 decimal points.}
+\caption{Results for Benchmark Problem 2 with a $3\times 3$ real symmetric matrix $-A$. \textbf{(a)} shows the components of the computed steady-state vector as a function of time. The dashed lines are the components computed by Euler's method and the solid lines are computed by the FFNN model. The dotted lines are the normalized components of the eigenvector corresponding to the smallest eigenvalue, as computed by Numpy's linalg.eig. All lines corresponding to the same vector component are here on top of each other. \textbf{(b)} shows the computed Rayleigh quotients, $r$, as a function of time for both Euler's method and the FFNN model. Both the largest and the smallest eigenvalue as calculated by linalg.eig are also shown. Three of the four lines are all at the same spot in the bottom. The numbers are rounded to 5 decimal points.}
 \label{fig:benchrun3}
 \end{figure}
 
@@ -316,11 +335,11 @@ Method & Rayleigh Quotient & Absolute Error
 \\
 \hline 
 \hline 
-Numpy & 1.0 & –
+Numpy & 2.0 & –
 \\
-Euler & 0.99999999 & $5.440 \cdot 10^{-10}$  
+Euler & 2.0 & $3.553 \cdot 10^{-15}$  
 \\
-FFNN & 0.99999626 & $3.736 \cdot 10^{-6}$
+FFNN & 2.0 & $3.526 \cdot 10^{-12}$
 \\
 \hline
 \hline 
@@ -328,18 +347,13 @@ FFNN & 0.99999626 & $3.736 \cdot 10^{-6}$
 \label{tab:eigbench3}
 \end{table}
 
-DISCUSS
-
-Shows that the computed steady-state vector not necessarily is the eigenvector if there are degenerated eigenvalues. However, the results indicate that the steady-state vector is a linear combination of the eigenvectors corresponding to the degenerated eigenvalues, which implies that the eigenvalue is the same nevertheless. 
-
-Interestingly, the accuracy of the Rayleigh quotient compared to the actual eigenvalue improved 
-
+As mentioned in \autoref{sec:benchmark problem 3}, the starting vector $\bm{x_0}$ is itself an eigenvector of $A$, so the point of convergence is just $\bm{x_0}$ itself. Both methods did well in approximating the constant function. This is particularly easy for the Euler method, which as usual came out on top.
 
 %===============================================================
 \subsubsection{Benchmark Problem 4}
 %===============================================================
 
-\autoref{tab:parabench4} tabulates the problem and model parameters for Benchmark Problem 4 described in \autoref{sec:benchmark problem 4}.
+\autoref{tab:parabench4} tabulates the problem and model parameters for Benchmark Problem 4 described in \autoref{sec:benchmark problem 4}. 
 
 \begin{table}[H]
 \caption{Problem and model parameters for Benchmark Problem 4.}
@@ -352,15 +366,15 @@ Parameter & Numerical Value
 \\
 \hline 
 \hline 
-Initial vector & $\bm{x_0}=(1, 0, -1)$
+Initial vector & $\bm{x_0}=(0.208, 0.347, 0.365, 0.123, 0.648, 0.518)$
 \\
-Simulation time & 1
+Simulation time & $T=10$
 \\
-Number of time points (Euler) & 101
+Number of time points (Euler) & 51, 101, 501, 1001
 \\
-Number of time points (FFNN) & 11
+Number of time points (FFNN) & 5, 11, 51, 101
 \\
-Number of epochs (FFNN) & 2000
+Number of epochs (FFNN) & $2\,000$
 \\
 \hline
 \hline 
@@ -368,54 +382,23 @@ Number of epochs (FFNN) & 2000
 \label{tab:parabench4}
 \end{table}
 
-\autoref{fig:benchrun4} shows the results for Benchmark Problem 3. The computed Rayleigh quotients and the absolute error relative to the eigenvalue computed by Numpy are tabulated in \autoref{tab:eigbench4}. 
-
 \begin{figure}[H]
-\begin{center}\includegraphics[scale=0.6]{latex/figures/eigval_benchrun4.pdf}
-\end{center}
-\caption{The computed Rayleigh quotients, $r$, as a function of time for both Euler's method and the FFNN model and the largest eigenvalue, $\lambda_\mathrm{max}$, of the matrix computed by Numpy's linalg.eig as well. The final Rayleigh quotients are rounded to 5 decimal points.}
-\label{fig:benchrun4}
+\centering
+\subfloat[]{{\includegraphics[scale=0.7]{latex/figures/eigvec_comp_run66a.pdf}}}
+\qquad
+\subfloat[]{{\includegraphics[scale=0.7]{latex/figures/eigvec_comp_run66b.pdf}}}
+\caption{Results for Benchmark Problem 4 with a $6\times 6$ real symmetric matrix $A$. The figure shows the time evolution of the vector components of the solution computed by Euler's method and the FFNN solution with, respectively, the following time steps: \textbf{(a)} 51 and 5, \textbf{(b)} 101 and 11. The points where we have trained the FFNN are marked with dots on the graphs.}
+\label{fig:benchrun4_comp_1}
 \end{figure}
 
-\begin{table}[H]
-\caption{The computed Rayleigh quotients at the final simulation time for both Euler's method and the FFNN model. The absolute error relative to the eigenvalue computed by Numpy is also listed.}
+\begin{figure}[H]
 \centering
-\rowcolors{2}{gray!20}{white}
-\begin{tabular}{c|c|c}
-\hline
-\hline 
-Method & Rayleigh Quotient & Absolute Error
-\\
-\hline 
-\hline 
-Numpy & 1.0 & –
-\\
-Euler & -0.99999999 & $1.110 \cdot 10^{-15}$  
-\\
-FFNN & -0.99965815 & $3.418 \cdot 10^{-4}$
-\\
-\hline
-\hline 
-\end{tabular}
-\label{tab:eigbench4}
-\end{table}
-
-DISCUSS
-
-Best Euler accuracy so far, FFNN not so much
-
-
-%===============================================================
-\subsubsection{Benchmark Problem 6}
-%===============================================================
-
-Benchmark Problem 5: 6x6 matrix and the effect of increased time and time points
-
-T=10 
-num epochs=2000
-Number of time points for euler and ffnn stated in respective plot title
-
-\autoref{fig:benchrun5}
+\subfloat[]{{\includegraphics[scale=0.7]{latex/figures/eigvec_comp_run66c.pdf}}}
+\qquad
+\subfloat[]{{\includegraphics[scale=0.7]{latex/figures/eigvec_comp_run66d.pdf}}}
+\caption{Results for Benchmark Problem 4 with a $6\times 6$ real symmetric matrix $A$. The figure shows the time evolution of the vector components of the solution computed by Euler's method and the FFNN solution with, respectively, the following time steps: \textbf{(a)} 501 and 51, \textbf{(b)} 1001 and 101.}
+\label{fig:benchrun4_comp_2}
+\end{figure}
 
 \begin{figure}[H]
 \centering
@@ -426,16 +409,11 @@ Number of time points for euler and ffnn stated in respective plot title
 \subfloat[]{{\includegraphics[scale=0.5]{latex/figures/eigval_run66c.pdf}}}
 \qquad
 \subfloat[]{{\includegraphics[scale=0.5]{latex/figures/eigval_run66d.pdf}}}
-\caption{Results for Benchmark Problem 5 with a $6\times 6$ real symmetric matrix, $A$. The figure shows the time evolution of the Rayleigh quotient computed by Euler's method and the FFNN model with, respectively, the following time steps \textbf{(a)} 51 and 5, \textbf{(b)} 101 and 11, \textbf{(c)} 501 and 51, \textbf{(d)} 1001 and 101}
-\label{fig:benchrun5}
+\caption{Results for Benchmark Problem 5 with a $6\times 6$ real symmetric matrix, $A$. The figure shows the time evolution of the Rayleigh quotient computed by Euler's method and the FFNN model with, respectively, the following time steps: \textbf{(a)} 51 and 5, \textbf{(b)} 101 and 11, \textbf{(c)} 501 and 51, \textbf{(d)} 1001 and 101. For number of time steps equal to 5 and 11, the points where we have trained the FFNN are marked with dots on the graph.}
+\label{fig:benchrun4}
 \end{figure}
 
-As seen in the above figure, the largest eigenvalue computed by Numpy is
-\begin{equation*}
-    \lambda_\mathrm{max} \approx 1.824312
-\end{equation*}
-
-The final Rayleigh quotients computed at different time steps and the absolute error relative to the eigenvalue computed by Numpy are tabulated in \autoref{tab:eigbench5}.
+The final Rayleigh quotients computed at different time steps and the absolute error relative to the eigenvalue computed by Numpy are tabulated in \autoref{tab:eigbench4}.
 
 \begin{table}[H]
 \caption{The computed Rayleigh quotients at the final simulation time for both Euler's method and the FFNN model with different time steps. The absolute error relative to the eigenvalue computed by Numpy is also listed.}
@@ -448,30 +426,33 @@ Method & Number of Time Steps & Rayleigh Quotient & Absolute Error
 \\
 \hline 
 \hline 
-Euler & 51 & 1.823322 & 0.000990
+Euler & 51 & 1.82431291 & $4.781\cdot10^{-11}$
 \\
-Euler & 101 & 1.823180 & 0.001132
+Euler & 101 & 1.82431291 & $2.060\cdot10^{-9}$
 \\
-Euler & 501 & 1.823055 & 0.001257
+Euler & 501 & 1.82431290 & $1.505\cdot10^{-8}$
 \\
-Euler & 1001 & 1.823039 & 0.001273
+Euler & 1001 & 1.82431289 & $1.847 \cdot10^{-8}$
 \\
-FFNN & 5 & 1.813760 & 0.010552
+FFNN & 5 & 1.82423239 & $8.052\cdot10^{-5}$
 \\
-FFNN & 11 & 1.816207 & 0.008105
+FFNN & 11 & 1.82425943 & $5.348\cdot10^{-5}$
 \\
-FFNN & 51 & 1.814569 & 0.009743
+FFNN & 51 & 1.82428079 & $3.212\cdot10^{-5}$
 \\
-FFNN & 101 & 1.814109 & 0.010202
+FFNN & 101 & 1.82427677 & $3.615\cdot10^{-5}$
 \\
 \hline
 \hline 
 \end{tabular}
-\label{tab:eigbench5}
+\label{tab:eigbench4}
 \end{table}
 
-Results indicate small number of time steps for Euler and 1 point per unit time (sikkert en bedre måte å si det på) for FFNN is best. However, in the Euler case this may just be for this particular matrix. Other test runs with random matrices have shown a better convergence with a time step that is neither to small or to large. In the FFNN case, this result match those of the test runs. The accuracy of the FFNN can be improved by increasing the number of epochs at the cost of computational speed.  
+For a small number of time steps neither method achieves a good accuracy in approximating the eigenvector. The eigenvalue approximation, however, is not as sensitive for the number of time steps, and does not vary at the same rate.
 
+At least for dense time points, the accuracy of the FFNN can be improved by increasing the number of epochs, but of course at the cost of increased computational requirements.
 
+The eigenvalue approximation actually, and perhaps interestingly, got worse with smaller time steps for the Euler method, even though the eigenvalue approximation clearly improved. For the FFNN solution we saw improvements for both the eigenvector and the eigenvalue until the number of time points reached 51. At 101 time points, the accuracy fell slightly.
 
+An advantage with the FFNN solution over the one from the Euler method is that we get a function that is smooth, i.e. infinitely differentiable, in every point, not a piecewise linear one.
 

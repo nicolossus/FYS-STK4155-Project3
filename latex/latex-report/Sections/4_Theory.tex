@@ -9,48 +9,34 @@ In the natural sciences, problems with variables constrained by boundary conditi
 \begin{equation}\label{eq:heq general}
     \dot{u} = \alpha \nabla^2 u
 \end{equation}
-where $\alpha$ is the diffusion coefficient which is a measure of the rate of transfer of heat with dimension length$^2$/time.
+where $\alpha$ is the diffusion coefficient which is a measure of the rate of transfer of heat with dimension length$^2$/time. 
 
-The initial condition gives the temperature distribution
-in the rod at t=0. Physically this means that we need to know the
-temperature in the rod at a moment to be able to predict the future temperature distribution
+Typical diffusion problems may experience rapid change at the outset, but then the evolution of $u$ converges to a stationary solution $\bar{u}$ as $t \to \infty$. In this limit $\dot{u}=0$, and $\bar{u}$ is governed by $\nabla^2 \bar{u}=0$, which is the Laplace equation. It is possible to solve for $u$ using an explicit numerical scheme. Since the solution $u$ of the heat equation is smooth and converges to a stationary state, small time steps are not convenient nor required by accuracy \cite{hpl}.
 
-Dirichlet conditions:
-The temperatures at the endpoints of the rod,
-T(0,t) and T(1,t), are prescribed at all time
-Physically, this corresponds to a situation where we have a heat source which keep the temperature at given values at the endpoints
-
-
-The complete initial-boundary value heat diffusion problem in one spatial dimension can then be specified as
+In this project, the physical problem is that of the temperature gradient in a rod of length $L$ in one spatial dimension. The temperature distribution in the rod at $t=0$ is given by the initial condition
+\begin{equation*}
+    u(x,0) = \sin(\pi x)
+\end{equation*} 
+By imposing Dirichlet boundary conditions, the temperatures at the endpoints of the rod, $u(0,t)$ and $u(L,t)$, are prescribed at all time. Physically, this corresponds to a system where a heat source keep the temperature constant at the endpoints. We shall use the simplest boundary condition: $u=0$. The complete initial-boundary value heat diffusion problem in one spatial dimension can then be specified as
 \begin{alignat}{2}
     \pdv{u}{t} &= \alpha \pdv[2]{u}{x}, \quad &&x \in (0,L), t\in (0, T], \label{eq:heat eq 1D}\\
-    u(x,0) &= I(x), \quad &&x\in [0,L], \\
+    u(x,0) &= \sin(\pi x), \quad &&x\in (0,L), \\
     u(0,t) &= 0, \quad &&t \geq 0, \\
     u(L,t) &= 0, \quad &&t \geq 0
 \end{alignat}
 
+In this project, we will consider a version of the heat equation where any varying parameters are scaled away and the spatial interval is transformed to the standard unity interval $[0,1]$. Assuming that the scaled parameters are denoted by a hat, we will for the sake of notational simplicity replace $\hat{x}\to x$ and $\hat{t} \to t$. The heat equation problem then reads
+\begin{alignat}{2}
+    \pdv{u}{t} &= \pdv[2]{u}{x}, \quad &&x \in (0,1), t\in (0, T], \label{eq:heat}\\
+    u(x,0) &= \sin(\pi x), \quad &&x\in (0,1), \\
+    u(0,t) &= 0, \quad &&t \geq 0, \\
+    u(1,t) &= 0, \quad &&t \geq 0
+\end{alignat}
+
+
 %================================================================
 \subsection{Closed Form Solution of the Heat Equation}\label{sec:Heat analytic Theory}
 %================================================================
-
-Scale problem
-
-
-\begin{equation}\label{eq:heat}
-\frac{\partial^2 u(x,t)}{\partial x}= \frac{\partial u(x,t)}{\partial t},\;\;\;\;t>0,x\in[0,1],
-\end{equation}
-with initial conditions
-\begin{equation*}
-    u(x,0)=\sin(\pi x),\;\;\;\;0<x<1
-\end{equation*}
-and boundary conditions
-\begin{equation*}
-    u(0,t)=0,\;\;\;\;t\ge0
-\end{equation*}
-and
-\begin{equation*}
-    u(1,t)=0,\;\;\;\;t\ge0.
-\end{equation*}
 
 Assume that the solution has the form
 \begin{equation*}
@@ -92,7 +78,7 @@ Note that by \cref{eq:heat},
 \end{equation*}
 by the initial condition $w(0)=0$, and by the boundary condition $v(0,t)=v(1,t)=0$ for $t>0$.
 
-By Leibniz' rule \cite[8.11.2]{die69}, we can differentiate under the integral sign, so that
+By Leibniz' rule \cite[\nopp 8.11.2]{die69}, we can differentiate under the integral sign, so that
 \begin{equation*}
     w'(t) = \int_0^1v(x,t)\pdv{v(x,t)}{t}\,\dd x = \int_0^1 v(x,t)\pdv[2]{v(x,t)}{x}\,\dd x.
 \end{equation*}
@@ -130,8 +116,10 @@ which is the PDE turned into algebraic equations. We assume that the only unknow
 where $F=\alpha \Delta t/\Delta x^2$ is a dimensionless number. The stability criterion for the explicit scheme requires that $F \leq 1/2$. 
 
 %================================================================
-\subsection{Solving Differential Equations With Neural Networks}
+\subsection{Solving Differential Equations With Neural Networks}\label{sec:solve_diff_eq_with_nn}
 %================================================================
+
+For a primer on feed-forward neural networks, we refer to the project \cite{PROJtwo} by the authors where the basics are covered. 
 
 \begin{definition}[Squashing function {\cite[Definition 2.3]{hsw89}}]
 A \emph{squashing function} is a function $\psi\colon\mathbb{R}\to[0,1]$ that is monotonely increasing and with $\lim_{t\to\infty}\psi(t)=1$ and $\lim_{t\to -\infty}=0$.
@@ -167,14 +155,13 @@ To find the weights $P$, we choose some points $t_1,\ldots,t_N\in K$ and minimiz
 
 
 %----------------------------------------------------------------
-\subsection{Project Theory 1}\label{sec:project theory}
+\subsection{Finding Eigenvalues with Differential Equations}\label{sec:project theory}
 %----------------------------------------------------------------
 
-
 Let $A\in\mathbb{R}^{n\times n}$ be a real symmetric matrix. Define $f\colon\mathbb{R}^n\to\mathbb{R}^n$ by
-\[
+\begin{equation}\label{eq:diff_eigen_f}
 f(x)=[x^TxA+(1-x^TAx)I]x,\;\;\;\; x\in\mathbb{R}^n,
-\]
+\end{equation}
 where $I\in\mathbb{R}^{n\times n}$ is the identity matrix. Let $x\colon\mathbb{R}\to\mathbb{R}^n$ be a map that satisfies
 \begin{equation}\label{eq:diff_eigen}
     Dx(t)=-x(t)+f(x(t)).
