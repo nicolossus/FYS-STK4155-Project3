@@ -13,9 +13,6 @@ Accompanying notebook: \href{https://github.com/nicolossus/FYS-STK4155-Project3/
 Nx = 11
 Nt = 199
 
-Max diff: 0.04009472326320718
-Mean diff: 0.003186288853514369
-
 \autoref{fig:heat_fe}
 \begin{figure}[H]
 \centering
@@ -24,13 +21,34 @@ Mean diff: 0.003186288853514369
 \subfloat[]{{\includegraphics[scale=0.48]{latex/figures/heat_fe.pdf}}}
 \qquad
 \subfloat[]{{\includegraphics[scale=0.5]{latex/figures/heat_diff_fe.pdf}}}
-\caption{FE heat}
+\caption{Comparison of analytical solution \textbf{(a)} and solution obtained with Forward Euler \textbf{(b)} of the heat equation. The Forward Euler solution was found using $Nx = 11$ spacial points and $Nt = 199$ temporal points. The error surface \textbf{(c)} shows the difference between the analytical and approximate solution.}
 \label{fig:heat_fe}
 \end{figure}
 
-CPU benchmark
-Number of iterations: 1000
-FE mean CPU time: 0.00158 secs
+
+\autoref{tab:heat_fe} tabulates the maximum and mean difference between the analytical and numerical solution shown in \autoref{fig:heat_fe}. A benchmark of the CPU time of the Forward Euler scheme was carried out with the same resolution as above. A simulation is regarded as a call of the function \cw{diffusion_solver()} found in the accompanying \href{https://github.com/nicolossus/FYS-STK4155-Project3/blob/master/notebooks/heat_pde_with_fe_and_tf.ipynb}{notebook}. The mean CPU time of 1000 simulations is also tabulated in \autoref{tab:heat_fe}.
+
+\begin{table}[H]
+\caption{Maximum and mean difference between the analytical solution and the numerical solution obtained with Forward Euler as shown in \autoref{fig:heat_fe}  
+The mean CPU time of 1000 Forward Euler simulations is also listed. The CPU Ryzen 9 3900X was used in the CPU benchmark.}
+\centering
+\rowcolors{2}{gray!25}{white}
+\begin{tabular}{ccc}
+\hline
+\hline 
+Max Difference & Mean Difference & Mean CPU Time (seconds)
+\\
+\hline 
+\hline 
+0.04009 & 0.00318 & 0.00122
+\\
+\hline
+\hline
+\end{tabular}
+\label{tab:heat_fe}
+\end{table}
+
+
 
 Simulations with the Forward Euler scheme show that the time step restriction, $F \leq 1/2$, which means $\Delta t \leq \Delta x^2 / (2\alpha)$, may be relevant in the beginning of the diffusion process, when the solution changes quite fast, but as time increases, the process slows down, and a small $\Delta t$ may be inconvenient.
 
