@@ -10,10 +10,8 @@ Accompanying notebook: \href{https://github.com/nicolossus/FYS-STK4155-Project3/
 %===============================================================
 \subsubsection{Forward Euler}
 %===============================================================
-Nx = 11
-Nt = 199
 
-\autoref{fig:heat_fe} presents the analytical solution, the approximated solution using Forward Euler, and an error surface describing the difference between the two.
+\autoref{fig:heat_fe} presents the analytical solution, the approximate solution found with Forward Euler, and an error surface describing the difference between the two.
 
 \begin{figure}[H]
 \centering
@@ -59,7 +57,7 @@ Simulations with the Forward Euler scheme show that the time step restriction, $
 %===============================================================
 
 
-\autoref{fig:heat_nn1} presents the analytical solution, the approximated solution and an error surface describing the difference between the two. The FFNN model was trained on the same set of grid points as the Forward Euler solution in \autoref{fig:heat_fe}. For plotting, the FFNN model was used to interpolate on a much finer grid of $301$ points in both space and time. 
+\autoref{fig:heat_nn1} presents the analytical solution, the approximated solution found with FFNN and an error surface describing the difference between the two. The FFNN model was trained on the same set of grid points as the Forward Euler solution in \autoref{fig:heat_fe}. For plotting, the FFNN model was used to interpolate on a much finer grid of $301$ points in both space and time. 
 
 \begin{figure}[H]
 \centering
@@ -68,7 +66,8 @@ Simulations with the Forward Euler scheme show that the time step restriction, $
 \subfloat[]{{\includegraphics[scale=0.48]{latex/figures/heat_nn2.pdf}}}
 \qquad
 \subfloat[]{{\includegraphics[scale=0.5]{latex/figures/heat_diff_nn2.pdf}}}
-\caption{Model 1, Plot solution on a larger grid than FFNN is trained on, i.e., points must be interpolated}
+\caption{Comparison of analytical solution \textbf{(a)} and solution obtained with FFNN \textbf{(b)} 
+of the heat equation. FFNN solution was found using $Nx = 11$ spacial points and $Nt = 199$ temporal points. The error surface \textbf{(c)} shows the difference between the analytical and approximate solution.}
 \label{fig:heat_nn1}
 \end{figure}
 
@@ -77,10 +76,8 @@ it in terms of accuracy. Without getting too optimistic, from \autoref{tab:heat_
 
 Further, the error surface of the FFNN model is quite different from Forward Euler. Though small in magnitude, it displays a more erratic behaviour and does not reflect the shape of the exact solution as Forward Euler does. This can be explained by the fact that neural networks are very complex functions of many parameters, and are thus very susceptible to "noise" cause by the repeated transformation through the layers.
 
-\autoref{tab:heat_nn1} presents the max and mean difference for the FFNN model, both on the training point and on 
-
 \begin{table}[H]
-\caption{Maximum and mean difference between the analytical solution and the numerical solution obtained with. The CPU time of training is also listed. The CPU Ryzen 9 3900X was used in the CPU benchmark.}
+\caption{Maximum and mean difference between the analytical solution and the numerical solution obtained with FFNN. The CPU time of training is also listed. The CPU Ryzen 9 3900X was used in the CPU benchmark.}
 \centering
 \rowcolors{2}{gray!25}{white}
 \begin{tabular}{cccccc}
@@ -106,25 +103,28 @@ Interpolation & 0.00895 & 0.00351 & 301 & 301 &
 
 
 %===============================================================
-\subsubsection{FFNN Model 2}
+\subsubsection{FFNN trained on small number of temporal points}
 %===============================================================
-Model 2: Train on equal number of spatial and temporal points
 
-Nx = 11
-Nt = 11
-2 layers + output, [150, 50, 1], [tanh, sigmoid, none] 
-1000 epochs
-Adam, initial lr=0.01
-Step: 1000, Loss: 0.008064055285575904
-Training FFNN CPU time: 147.62562 secs
-Step: 1000, Loss: 0.0027709536906761877
-Training FFNN CPU time: 42.11612 secs
+\autoref{fig:heat_nn2} presents the analytical solution, the approximated solution found with FFNN and an error surface describing the difference between the two. The FFNN model was trained on $11$ points in both space and time. For plotting, the FFNN model was used to interpolate on a much finer grid of $301$ points in both space and time. 
 
+\begin{figure}[H]
+\centering
+\subfloat[]{{\includegraphics[scale=0.48]{latex/figures/heat_ana_nn4.pdf}}}
+\qquad
+\subfloat[]{{\includegraphics[scale=0.48]{latex/figures/heat_nn4.pdf}}}
+\qquad
+\subfloat[]{{\includegraphics[scale=0.5]{latex/figures/heat_diff_nn4.pdf}}}
+\caption{Model 2, Plot solution on a larger grid than FFNN is trained on, i.e., points must be interpolated}
+\label{fig:heat_nn2}
+\end{figure}
 
-\autoref{tab:heat_nn2}
+From \autoref{fig:heat_nn2}, we see that the FFNN model manages to approximate the solution quite well despite having only $11$ points in both space and time to train on, when it formerly had $199$ points in time. Having fewer points to train on, the network gets less information to base the approximation on. Naturally, the error is higher as can be seen by the amplitude of the error surface in \autoref{fig:heat_nn2} and the error estimates in \autoref{tab:heat_nn2}. However, it should be noted that the for such choice of spacial and temporal points, we are way outside Forward Eulers stability criterion, which would promptly produce a nonsense solution. The neural network does not display a similar criterion of stability. 
+
+The reduction of training points also sped up the simulation to 4.9 seconds as seen in \autoref{tab:heat_nn2}. However, this is still magnitudes of order larger than Forward Euler when the criterion of stability was fulfilled. 
 
 \begin{table}[H]
-\caption{Maximum and mean difference between the analytical solution and the numerical solution obtained with. The CPU time of training is also listed. The CPU Ryzen 9 3900X was used in the CPU benchmark.}
+\caption{Maximum and mean difference between the analytical solution and the numerical solution obtained with FFNN. The CPU time of training is also listed. The CPU Ryzen 9 3900X was used in the CPU benchmark.}
 \centering
 \rowcolors{2}{gray!25}{white}
 \begin{tabular}{cccccc}
@@ -145,23 +145,6 @@ Interpolation & 0.03215 & 0.00395 & 301 & 301 &
 \end{tabular}
 \label{tab:heat_nn2}
 \end{table}
-
-\autoref{fig:heat_nn2} Plot solution on a larger grid than FFNN is trained on, i.e., points must be interpolated
-
-301, 301 points
-
-\begin{figure}[H]
-\centering
-\subfloat[]{{\includegraphics[scale=0.48]{latex/figures/heat_ana_nn4.pdf}}}
-\qquad
-\subfloat[]{{\includegraphics[scale=0.48]{latex/figures/heat_nn4.pdf}}}
-\qquad
-\subfloat[]{{\includegraphics[scale=0.5]{latex/figures/heat_diff_nn4.pdf}}}
-\caption{Model 2, Plot solution on a larger grid than FFNN is trained on, i.e., points must be interpolated}
-\label{fig:heat_nn2}
-\end{figure}
-
-
 %===============================================================
 %===============================================================
 \subsection{Eigenvalue Problem}\label{sec:eigenvalue results}

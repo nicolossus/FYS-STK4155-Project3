@@ -2,73 +2,12 @@
 \section{Introduction}\label{sec:Introduction}
 %================================================================
 
-Differential equations have a wide range of applications in the natural sciences, and many methods have been developed for solving them. In numerical analysis, finite difference methods (FDM) are widespread as they reduce the differential equation to a system of algebraic equations making the problem of finding the solution ideal to modern computers. The aim of this project is to design feed-forward neural network (FFNN) models suitable for solving ordinary, partial and coupled differential equations. 
+Differential equations have a wide range of applications in the natural sciences, and many methods have been developed for solving them. In numerical analysis, finite difference methods (FDMs) are widespread as they reduce the differential equation to a system of algebraic equations making the problem of finding the solution ideal to modern computers. The aim of this project is to design feed-forward neural network (FFNN) models suitable for solving ordinary, partial and coupled differential equations. 
 
-Could a neural network represent the solution of a differential equation? The universal approximation theorem states that simple artificial neural networks, when given appropriate parameters, can approximate continuous functions on compact subsets of $\R^n$. To our great joy, this includes the solution of many differential equations. However, the existence of an approximating model has no real value if it can not be obtained by a reliable scheme. As broadly known, neural networks can be trained by various methods, such as the many flavors of gradient decent. 
+The rationale for proposing an approach with FFNN models is justified by the universal approximation theorem, which states that feed-forward neural networks, when given appropriate parameters, can approximate continuous functions on compact subsets of $\R^n$. This includes the solution of many differential equations. Neural networks are uniquely suited in optimisation problems, and can be trained by various methods such as the many flavors of gradient descent algorithms. By reformulating the differential equation to an equation where minimization of some parameters must be done, a neural net might be able to solve the problem. To that end, a possible method is to formulate a trial solution involving the result from a neural network, and construct a cost function which contains information about derivatives of the network.
 
-The universal approximation theorem states that simple artificial neural networks when given appropriate parameters can approximate continuous functions on compact subsets of $\R^n$, which include solutions of many differential equations. 
+The first FFNN model is employed within the TensorFlow framework to learn the initial-boundary problem given by the heat equation, a partial differential equation (PDE) with both temporal and spatial dependence. The problem formulation is scaled to the standard unity interval (0,1) in one spatial dimension. An explicit numerical scheme using Forward Euler will be used to assess the efficiency and accuracy of the FFNN model, alongside the exact solution of the problem. 
 
-To that end, it is therefore desirable to reformulate a given differential equation such that the neural network can be used as an ansatz of the differential equation problem. 
+The second FFNN model is employed, also within the TensorFlow framework, to learn the solution to the nonlinear, coupled ordinary differential equation (ODE) presented by Yi et. al in the article from \href{https://www.sciencedirect.com/science/article/pii/S0898122104901101}{Computers and Mathematics with Applications 47, 1155 (2004)}, which describes the state of a continuous-time recurrent neural network (CTRNN) model. Given a real symmetric matrix $A$ in the source term, the temporal dynamic described by this ODE has convergence properties to an eigenvector corresponding to the largest eigenvalue $\lambda$, given that the initial vector $\mathbf{x}_0$ is not orthogonal to the eigenspace of $\lambda$. If $\mathbf{x}_0$ is not orthogonal to the eigenspace of the smallest eigenvalue $\sigma$, replacing $A$ with $-A$ yields an eigenvector corresponding to $\sigma$. The eigenvalue itself is calculated with the Rayleigh quotient. The aim is to check if the constructed FFNN succeeds in computing both the largest and smallest eigenvalue for some benchmark $3\times 3$ and $6\times 6$ real symmetric matrices. We will also try choosing $\mathbf{x}_0$ orthogonal to the eigenspace corresponding to the largest eigenvalue, to make the network converge to an eigenvalue different from the largest. This starting point will itself be an eigenvector. In order to assess the FFNN model, we will compare the result with those from Euler's method for solving the same ODE and Numpy's linalg.eig which directly computes the eigenvalues of the matrix $A$. 
 
-Neural networks are uniquely suited to solving optimisation problems. By reformulating the differential equation to an equation where minimization of some parameters must be done, a neural net might be able to solve the problem. A proposed approach is to formulate a trial solution involving the result from a neural network, and construct a cost function which contains information about derivatives of the network. 
-
-
-The first FFNN model is employed to learn the initial-boundary problem given by the heat equation, a PDE with both temporal and spatial dependence. The problem formulation is scaled to the standard unity interval (0,1) in one spatial dimension. 
-
-Heat PDE. Forward Euler stability criterion - requires many more temporal mesh points for finer spatial resolution, FFNN advantageous - manages to interpolate to larger grids contained in the domain it was trained on without significant loss in accuracy.
-
-
-
-
-
- 
-
-
-
-
-
-In this notebook, an FFNN model is employed within the TensorFlow framework to learn the solution to the nonlinear, coupled ODE, presented by Yi et. al in the article from 
-
-\href{https://www.sciencedirect.com/science/article/pii/S0898122104901101}{Computers and Mathematics with Applications 47, 1155 (2004)}
-
-describing the state of a CTRNN model. Given a real symmetric matrix $A$ in the source term, the temporal dynamic described by this ODE has convergence properties to an eigenvector corresponding to the largest eigenvalue $\lambda$, given that the initial vector $\mathbf{x}_0$ is not orthogonal to the eigenspace of $\lambda$. If $\mathbf{x}_0$ is not orthogonal to the eigenspace of the smallest eigenvalue $\sigma$, replacing $A$ with $-A$ yields an eigenvector corresponding to $\sigma$. The eigenvalue itself is calculated with the Rayleigh quotient.
-
-The aim is to check if the constructed FFNN succeeds in computing both the largest and smallest eigenvalue for some benchmark $3\times 3$ and $6\times 6$ real symmetric matrices. We will also try choosing $\mathbf{x}_0$ orthogonal to the eigenspace corresponding to the largest eigenvalue, to make the network converge to an eigenvalue different from the largest. This starting point will itself be an eigenvector.
-
-In order to assess the FFNN model, we will compare the result with those from Euler's method for solving the same ODE and Numpy's ``linalg.eig`` which directly computes the eigenvalues of the matrix $A$. 
-
-Unfortunately, we found tensorflow objects (such as tensorflow functions) hard to reuse. There is therefore much repetitive code in the code cells below. This notebook is organized such that each code cell have all the necessary code, except imports, to solve a particular problem. To better distinguish what problem a particular code cell solves, we have added headers that explains the problem at hand.
-
-%%%
-%%%
-%%%
-%%%
-
-and computes the corresponding eigenvector upon time evolution of the model. 
-
-The temporal dynamic of the CTRNN describes the state of the network, and has convergence properties to the steady  
-
-given a real symmetric matrix, solution gives a steady-state vector which can be taken as an
-
-The proposed network model is described by differential equations, which is a class of continuous time recurrent neural network model. 
-
-A feed-forward neural network is presented for computing the largest and smallest eigenvalue of a real symmetric matrix, A.
-
-
-Efficient computation of eigenvectors and eigenvalues of a matrix is an important problem in engineering, especially for computing eigenvectors corresponding to largest or smallest eigenvalues of a matrix
-
-A FFNN model was employed to learn the initial-boundary problem given by the heat equation in one spatial dimension. The results were compared with those from a closed form solution and an explicit numerical scheme using the Forward Euler (FE) method.
-
-in this project we will employ a feed forward neural network (ffnn) to learn the initial-boundary problem given by the heat equation, a partial differential equation (pde) with both temporal and spatial derivatives, and compare the results with those from an explicit scheme using the forward euler (fe) method. the problem formulation will be in one spatial dimension with initial and boundary conditions that yield a closed-form solution. the analytical solution will be used to assess the accuracy of the methods. 
-
-to further study the capability of a ffnn to learn the solution of differential equations, we will 
-temporal dynamic of neural network. given a real symmetric matrix, solution gives a steady-state vector which can be taken as an eigenvector of the matrix. by computing the rayleigh quotient, largest eigenvalue.
-compare with euler's method and traditional numerical eigenvalue solvers.
-
-
-Employ a feed-forward neural network to learn the solution of the heat equation in one spatial dimension. The network was trained on a grid with 11 points with the both the spatial, $x$, and temporal, $t$, domain $x, t \in [0,1]$. The trained network was then given a larger grid with 41 points to interpolate the solution on. Mean difference from analytic solution ...
-
-
-
-
-This project is structured by first presenting a theoretical overview of the Ising model and the aforementioned statistical learning methods in \autoref{sec:Theory}. This is followed by a presentation on the approach to study the various computations of interest in \autoref{sec:Method}. Next, the results of the implementation are presented and discussed in \autoref{sec:Results}, before subsequently they are concluded upon in \autoref{sec:Conclusion}. Lastly, an outline of possible continuations of the models, with respect to the implementation, are presented in \autoref{sec:Future}.
+This project is structured by first presenting a theoretical overview of the heat equation and the eigenvalue problem, as well as the aforementioned statistical learning methods in \autoref{sec:Theory}. This is followed by a presentation on the approach to study the various computations of interest in \autoref{sec:Method}. Next, the results of the implementation are presented and discussed in \autoref{sec:Results}, before subsequently they are concluded upon in \autoref{sec:Conclusion}. Lastly, an outline of possible continuations of the models, with respect to the implementation, are presented in \autoref{sec:Future}.
