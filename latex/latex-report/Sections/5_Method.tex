@@ -16,6 +16,8 @@ Following the discussion in \autoref{sec:Heat numerical Theory}, the computation
         \end{itemize}
 \end{enumerate}
 
+FFNN
+Train on spatial and temporal points as dictated by FE stability criterion, Equal footing
 
 \begin{figure}[H]
 \begin{center}
@@ -287,7 +289,7 @@ We solve the differential equation for $-A$ to get an approximation of the small
 \subsubsection{Benchmark Problem 3}\label{sec:benchmark problem 3}
 %==============================================================
 This time we let
-\begin{equation}\label{eq:33mat2}
+\begin{equation}\label{eq:33mat3}
     A = \left(\begin{array}{ccc}
         3 & 1 & -1 \\
         1 & 3 & -1 \\
@@ -302,7 +304,7 @@ Here we choose initial point $x_0=(-1, 1, 0)$, which is orthogonal to the eigens
 \subsubsection{Benchmark Problem 4}\label{sec:benchmark problem 4}
 %==============================================================
 We now move on from $3\times 3$-matrices to a $6\times 6$-matrix. We use the randomly generated matrix $A$ which when rounded to four decimal places looks like
-\begin{equation}\label{eq:33mat2}
+\begin{equation}\label{eq:66mat1}
     \left(\begin{array}{cccccc}
         0.4967 & 0.7205 & 0.4448 &  0.3075 & -0.3893 & -0.4179 \\
         0.4448 & -1.1914 & -1.7249 & 0.4517 & -1.0819 & 0.1503 \\

@@ -13,10 +13,8 @@ Accompanying notebook: \href{https://github.com/nicolossus/FYS-STK4155-Project3/
 Nx = 11
 Nt = 199
 
-Max diff: 0.04009472326320718
-Mean diff: 0.003186288853514369
+\autoref{fig:heat_fe} presents the analytical solution, the approximated solution using Forward Euler, and an error surface describing the difference between the two.
 
-\autoref{fig:heat_fe}
 \begin{figure}[H]
 \centering
 \subfloat[]{{\includegraphics[scale=0.48]{latex/figures/heat_ana_fe.pdf}}}
@@ -24,52 +22,44 @@ Mean diff: 0.003186288853514369
 \subfloat[]{{\includegraphics[scale=0.48]{latex/figures/heat_fe.pdf}}}
 \qquad
 \subfloat[]{{\includegraphics[scale=0.5]{latex/figures/heat_diff_fe.pdf}}}
-\caption{FE heat}
+\caption{Comparison of analytical solution \textbf{(a)} and solution obtained with Forward Euler \textbf{(b)} of the heat equation. The Forward Euler solution was found using $Nx = 11$ spacial points and $Nt = 199$ temporal points. The error surface \textbf{(c)} shows the difference between the analytical and approximate solution.}
 \label{fig:heat_fe}
 \end{figure}
 
-CPU benchmark
-Number of iterations: 1000
-FE mean CPU time: 0.00158 secs
+From \autoref{fig:heat_fe}, we see that Forward Euler succeeds in establishing a good approximation for the solution of the heat equation, with the resulting errors presented in \autoref{tab:heat_fe}. From sub figure \textbf{(c)}, we see that the error surface have the same general shape as exact solution itself, although with a much smaller amplitude as the approximation is close to the analytical. One could say that Forward Euler respects the structure of the problem, in the sense that the discrepancies are produced in an orderly fashion that reflects the shape of the exact solution.
+
+A benchmark of the CPU time of the Forward Euler scheme was carried out with the same resolution as above. The benchmark is based on 1000 simulations and resulted in an average runtime of $0.00122s$ as presented in \autoref{tab:heat_fe}.
+
+\begin{table}[H]
+\caption{Maximum and mean difference between the analytical solution and the numerical solution obtained with Forward Euler as shown in \autoref{fig:heat_fe}  
+The mean CPU time of 1000 Forward Euler simulations is also listed. The CPU Ryzen 9 3900X was used in the CPU benchmark.}
+\centering
+\rowcolors{2}{gray!25}{white}
+\begin{tabular}{ccc}
+\hline
+\hline 
+Max Difference & Mean Difference & Mean CPU Time (seconds)
+\\
+\hline 
+\hline 
+0.04009 & 0.00318 & 0.00122
+\\
+\hline
+\hline
+\end{tabular}
+\label{tab:heat_fe}
+\end{table}
+
+
 
 Simulations with the Forward Euler scheme show that the time step restriction, $F \leq 1/2$, which means $\Delta t \leq \Delta x^2 / (2\alpha)$, may be relevant in the beginning of the diffusion process, when the solution changes quite fast, but as time increases, the process slows down, and a small $\Delta t$ may be inconvenient.
 
 %===============================================================
-\subsubsection{FFNN Model 1}
+\subsubsection{FFNN trained on high number of temporal points}
 %===============================================================
 
-Model 1: Train on spatial and temporal points as dictated by FE stability criterion
 
-Nx = 11
-Nt = 199
-2 layers + output, [150, 50, 1], [tanh, sigmoid, none] 
-1000 epochs
-Adam, initial lr=0.01
-Step: 1000, Loss: 0.008064055285575904
-Training FFNN CPU time: 147.62562 secs
-
-\autoref{fig:heat_nn1} Plot solution on the grid FFNN is trained on
-
-Max diff: 0.008466789818225778
-Mean diff: 0.0029635112954797672
-
-\begin{figure}[H]
-\centering
-\subfloat[]{{\includegraphics[scale=0.48]{latex/figures/heat_ana_nn1.pdf}}}
-\qquad
-\subfloat[]{{\includegraphics[scale=0.48]{latex/figures/heat_nn1.pdf}}}
-\qquad
-\subfloat[]{{\includegraphics[scale=0.5]{latex/figures/heat_diff_nn1.pdf}}}
-\caption{Model 1, Plot solution on the grid FFNN is trained on}
-\label{fig:heat_nn1}
-\end{figure}
-
-\autoref{fig:heat_nn2} Plot solution on a larger grid than FFNN is trained on, i.e., points must be interpolated
-
-301, 301 points
-
-Max diff: 0.008467176325477247
-Mean diff: 0.0032787069037113277
+\autoref{fig:heat_nn1} presents the analytical solution, the approximated solution and an error surface describing the difference between the two. The FFNN model was trained on the same set of grid points as the Forward Euler solution in \autoref{fig:heat_fe}. For plotting, the FFNN model was used to interpolate on a much finer grid of $301$ points in both space and time. 
 
 \begin{figure}[H]
 \centering
@@ -79,8 +69,41 @@ Mean diff: 0.0032787069037113277
 \qquad
 \subfloat[]{{\includegraphics[scale=0.5]{latex/figures/heat_diff_nn2.pdf}}}
 \caption{Model 1, Plot solution on a larger grid than FFNN is trained on, i.e., points must be interpolated}
-\label{fig:heat_nn2}
+\label{fig:heat_nn1}
 \end{figure}
+
+The FFNN model too succeeds in establishing a good approximation, as seen from figure \autoref{fig:heat_nn1} and the accompanying error estimates in \autoref{tab:heat_nn1}. The FFNN model, while being trained on the same grid points as Forward Euler, actually surpasses
+it in terms of accuracy. Without getting too optimistic, from \autoref{tab:heat_nn1}, the CPU time clocked in at about 19 seconds, some 4 orders of magnitude longer than Forward Euler.
+
+Further, the error surface of the FFNN model is quite different from Forward Euler. Though small in magnitude, it displays a more erratic behaviour and does not reflect the shape of the exact solution as Forward Euler does. This can be explained by the fact that neural networks are very complex functions of many parameters, and are thus very susceptible to "noise" cause by the repeated transformation through the layers.
+
+\autoref{tab:heat_nn1} presents the max and mean difference for the FFNN model, both on the training point and on 
+
+\begin{table}[H]
+\caption{Maximum and mean difference between the analytical solution and the numerical solution obtained with. The CPU time of training is also listed. The CPU Ryzen 9 3900X was used in the CPU benchmark.}
+\centering
+\rowcolors{2}{gray!25}{white}
+\begin{tabular}{cccccc}
+\hline
+\hline 
+& Max & Mean & Spatial & Temporal & CPU Time
+\\
+& Difference & Difference & Points (\#) & Points (\#) & (seconds)
+\\
+\hline 
+\hline 
+Training & 0.00895 & 0.00317 & 11 & 199 & 19.14199
+\\
+Interpolation & 0.00895 & 0.00351 & 301 & 301 &
+\\
+\hline
+\hline
+\end{tabular}
+\label{tab:heat_nn1}
+\end{table}
+
+
+
 
 %===============================================================
 \subsubsection{FFNN Model 2}
@@ -97,28 +120,35 @@ Training FFNN CPU time: 147.62562 secs
 Step: 1000, Loss: 0.0027709536906761877
 Training FFNN CPU time: 42.11612 secs
 
-\autoref{fig:heat_nn3} Plot solution on the grid FFNN is trained on
 
-Max diff: 0.026960711104318635
-Mean diff: 0.0029851059330631173
+\autoref{tab:heat_nn2}
 
-\begin{figure}[H]
+\begin{table}[H]
+\caption{Maximum and mean difference between the analytical solution and the numerical solution obtained with. The CPU time of training is also listed. The CPU Ryzen 9 3900X was used in the CPU benchmark.}
 \centering
-\subfloat[]{{\includegraphics[scale=0.48]{latex/figures/heat_ana_nn3.pdf}}}
-\qquad
-\subfloat[]{{\includegraphics[scale=0.48]{latex/figures/heat_nn3.pdf}}}
-\qquad
-\subfloat[]{{\includegraphics[scale=0.5]{latex/figures/heat_diff_nn3.pdf}}}
-\caption{Model 2, Plot solution on the grid FFNN is trained on}
-\label{fig:heat_nn3}
-\end{figure}
+\rowcolors{2}{gray!25}{white}
+\begin{tabular}{cccccc}
+\hline
+\hline 
+& Max & Mean & Spatial & Temporal & CPU Time
+\\
+& Difference & Difference & Points (\#) & Points (\#) & (seconds)
+\\
+\hline 
+\hline 
+Training & 0.02696 & 0.00298 & 11 & 11 & 4.89815
+\\
+Interpolation & 0.03215 & 0.00395 & 301 & 301 &
+\\
+\hline
+\hline
+\end{tabular}
+\label{tab:heat_nn2}
+\end{table}
 
-\autoref{fig:heat_nn4} Plot solution on a larger grid than FFNN is trained on, i.e., points must be interpolated
+\autoref{fig:heat_nn2} Plot solution on a larger grid than FFNN is trained on, i.e., points must be interpolated
 
 301, 301 points
-
-Max diff: 0.03215260678986426
-Mean diff: 0.003950743671390742
 
 \begin{figure}[H]
 \centering
@@ -128,7 +158,7 @@ Mean diff: 0.003950743671390742
 \qquad
 \subfloat[]{{\includegraphics[scale=0.5]{latex/figures/heat_diff_nn4.pdf}}}
 \caption{Model 2, Plot solution on a larger grid than FFNN is trained on, i.e., points must be interpolated}
-\label{fig:heat_nn4}
+\label{fig:heat_nn2}
 \end{figure}
 
 
@@ -216,6 +246,8 @@ The two solutions shown in \autoref{fig:benchrun1} follow each other closely, an
 
 The problem and model parameters for Benchmark Problem 2 are described in \autoref{sec:benchmark problem 2}. In this problem we find the smallest eigenvalue of $A$.
 
+\autoref{tab:parabench2}
+
 \begin{table}[H]
 \caption{Problem and model parameters for Benchmark Problem 2.}
 \centering
@@ -240,7 +272,7 @@ Number of epochs (FFNN) & 2\,000
 \hline
 \hline 
 \end{tabular}
-\label{tab:parabench1}
+\label{tab:parabench2}
 \end{table}
 
 \autoref{fig:benchrun2} shows the results. The computed Rayleigh quotients and the absolute error relative to the eigenvalue computed by Numpy are tabulated in \autoref{tab:eigbench2}. 
@@ -382,13 +414,15 @@ Number of epochs (FFNN) & $2\,000$
 \label{tab:parabench4}
 \end{table}
 
+\autoref{fig:benchrun4comp1} blabla and \autoref{fig:benchrun4comp2} 
+
 \begin{figure}[H]
 \centering
 \subfloat[]{{\includegraphics[scale=0.7]{latex/figures/eigvec_comp_run66a.pdf}}}
 \qquad
 \subfloat[]{{\includegraphics[scale=0.7]{latex/figures/eigvec_comp_run66b.pdf}}}
 \caption{Results for Benchmark Problem 4 with a $6\times 6$ real symmetric matrix $A$. The figure shows the time evolution of the vector components of the solution computed by Euler's method and the FFNN solution with, respectively, the following time steps: \textbf{(a)} 51 and 5, \textbf{(b)} 101 and 11. The points where we have trained the FFNN are marked with dots on the graphs.}
-\label{fig:benchrun4_comp_1}
+\label{fig:benchrun4comp1}
 \end{figure}
 
 \begin{figure}[H]
@@ -397,8 +431,11 @@ Number of epochs (FFNN) & $2\,000$
 \qquad
 \subfloat[]{{\includegraphics[scale=0.7]{latex/figures/eigvec_comp_run66d.pdf}}}
 \caption{Results for Benchmark Problem 4 with a $6\times 6$ real symmetric matrix $A$. The figure shows the time evolution of the vector components of the solution computed by Euler's method and the FFNN solution with, respectively, the following time steps: \textbf{(a)} 501 and 51, \textbf{(b)} 1001 and 101.}
-\label{fig:benchrun4_comp_2}
+\label{fig:benchrun4comp2}
 \end{figure}
+
+
+\autoref{fig:benchrun4}
 
 \begin{figure}[H]
 \centering
